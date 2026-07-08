@@ -7,6 +7,13 @@
 
   const state = { plan: null, tab: "today", err: null };
 
+  // Live media-animation timers, cleared on every re-render (else they leak).
+  let activeTimers = [];
+  // Debounced log writes, keyed by record key, flushed before any re-render or on hide.
+  const pending = new Map();
+  // Guards renderTab against its own async races (stale append after a newer render).
+  let renderToken = 0;
+
   // ---------- helpers ----------
   const $ = (sel, root = document) => root.querySelector(sel);
   const el = (tag, props = {}, ...kids) => {
@@ -21,7 +28,7 @@
 
   // ---------- plan loading ----------
   async function loadPlan() {
-    const url = (localStorage.getItem("planUrl") || "data/workout.yml") + "?t=" + Date.now();
+    const url = localStorage.getItem("planUrl") || "data/workout.yml";
     const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) throw new Error(`workout.yml: HTTP ${res.status}`);
     return jsyaml.load(await res.text());
@@ -43,16 +50,16 @@
         : el("video", { src: media.video, controls: true, playsInline: true, loop: true, muted: true }));
       return box;
     }
-    if (media && media.gif) { box.append(el("img", { src: media.gif, className: "on", loading: "lazy" })); return box; }
+    if (media && media.gif) { box.append(el("img", { src: media.gif, crossOrigin: "anonymous", className: "on", loading: "lazy" })); return box; }
 
     const frames = resolveFrames(media);
     if (!frames) { box.append(el("div", { className: "ph", textContent: "No demo — add media: in YAML" })); return box; }
 
-    const imgs = frames.map((src, i) => el("img", { src, className: i === 0 ? "on" : "", loading: "lazy" }));
+    const imgs = frames.map((src, i) => el("img", { src, crossOrigin: "anonymous", className: i === 0 ? "on" : "", loading: "lazy" }));
     box.append(...imgs);
     let i = 0, playing = true, timer = null;
     const step = () => { imgs[i].classList.remove("on"); i = (i + 1) % imgs.length; imgs[i].classList.add("on"); };
-    const start = () => { if (imgs.length > 1) timer = setInterval(step, media && media.interval || 850); };
+    const start = () => { if (imgs.length > 1) { timer = setInterval(step, media && media.interval || 850); activeTimers.push(timer); } };
     const toggle = el("button", { className: "frame-toggle", textContent: "⏸" });
     toggle.onclick = () => {
       playing = !playing;
@@ -77,7 +84,7 @@
     return null;
   }
 
-  async function exerciseCard(ex, dayName) {
+  async function exerciseCard(ex, dayName, editable, idx) {
     const card = el("div", { className: "card" });
     card.append(el("div", { className: "ex-head" }, el("h2", { textContent: ex.name })));
 
@@ -100,7 +107,9 @@
     if (ex.progression) card.append(el("div", { className: "progression", innerHTML: `<b>Progression:</b> ${escapeHtml(ex.progression)}` }));
     if (ex.notes) card.append(el("div", { className: "notes", innerHTML: `<b>Notes:</b> ${escapeHtml(ex.notes)}` }));
 
-    card.append(await logBlock(ex, dayName));
+    // Logging only on the Today tab — logging another weekday from Week view would
+    // key the record to today's date, colliding with today's own log.
+    if (editable) card.append(await logBlock(ex, dayName, idx));
     return card;
   }
   const stat = (k, v, sub) => el("div", { className: "stat" },
@@ -110,12 +119,14 @@
   function escapeHtml(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
 
   // ---------- logging ----------
-  async function logBlock(ex, dayName) {
+  async function logBlock(ex, dayName, idx) {
     const date = todayISO();
-    const key = `${date}|${ex.name}`;
-    const nSets = Number(ex.sets) || 3;
+    // idx disambiguates the same exercise appearing twice in one day's plan.
+    const key = `${date}|${idx}|${ex.name}`;
+    const nSets = Math.max(1, Math.floor(Number(ex.sets)) || 3);
     let rec = await DB.get("logs", key);
-    if (!rec) rec = { key, date, day: dayName, exercise: ex.name, sets: Array.from({ length: nSets }, () => ({ weight: "", reps: "", done: false })) };
+    if (!rec) rec = { key, date, day: dayName, exercise: ex.name, sets: [] };
+    if (!Array.isArray(rec.sets)) rec.sets = [];               // tolerate malformed/imported records
     while (rec.sets.length < nSets) rec.sets.push({ weight: "", reps: "", done: false });
 
     const wrap = el("div", { className: "log" });
@@ -124,14 +135,14 @@
     wrap.append(el("div", { className: "set-head" },
       el("span", { textContent: "#" }), el("span", { textContent: "kg" }), el("span", { textContent: "reps" }), el("span", { textContent: "✓" })));
 
-    const save = debounce(() => DB.put("logs", rec), 400);
-    rec.sets.forEach((s, i) => {
+    // Show exactly nSets rows; extra rows from an earlier, larger plan stay stored but hidden.
+    rec.sets.slice(0, nSets).forEach((s, i) => {
       const wIn = el("input", { type: "number", inputMode: "decimal", value: s.weight, placeholder: defWeight(ex) });
       const rIn = el("input", { type: "number", inputMode: "numeric", value: s.reps, placeholder: String(ex.reps ?? "") });
       const chk = el("button", { className: "chk" + (s.done ? " done" : ""), textContent: "✓" });
-      wIn.oninput = () => { s.weight = wIn.value; save(); };
-      rIn.oninput = () => { s.reps = rIn.value; save(); };
-      chk.onclick = () => { s.done = !s.done; chk.classList.toggle("done", s.done); save(); };
+      wIn.oninput = () => { s.weight = wIn.value; scheduleSave(rec); };
+      rIn.oninput = () => { s.reps = rIn.value; scheduleSave(rec); };
+      chk.onclick = () => { s.done = !s.done; chk.classList.toggle("done", s.done); scheduleSave(rec); };
       wrap.append(el("div", { className: "set-row" }, el("div", { className: "n", textContent: i + 1 }), wIn, rIn, chk));
     });
     return wrap;
@@ -144,13 +155,27 @@
     const all = await DB.getAll("logs");
     const prev = all.filter((r) => r.exercise === exName && r.date < beforeDate).sort((a, b) => a.date.localeCompare(b.date)).pop();
     if (!prev) return null;
-    const done = prev.sets.filter((s) => s.weight || s.reps).map((s) => `${s.weight || "?"}×${s.reps || "?"}`).join(", ");
+    const done = (prev.sets || []).filter((s) => s.weight || s.reps).map((s) => `${s.weight || "?"}×${s.reps || "?"}`).join(", ");
     return `${prev.date} — ${done || "logged"}`;
   }
-  function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+
+  // Debounced persistence, keyed by record so re-renders can flush before reloading.
+  function scheduleSave(rec) {
+    const prev = pending.get(rec.key);
+    if (prev) clearTimeout(prev.timer);
+    const timer = setTimeout(() => { pending.delete(rec.key); DB.put("logs", rec); }, 400);
+    pending.set(rec.key, { rec, timer });
+  }
+  async function flushSaves() {
+    const items = [...pending.values()];
+    pending.clear();
+    for (const p of items) { clearTimeout(p.timer); await DB.put("logs", p.rec); }
+  }
+  window.addEventListener("pagehide", flushSaves);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushSaves(); });
 
   // ---------- day rendering ----------
-  async function renderDay(dayName, view) {
+  async function renderDay(dayName, view, editable = false) {
     const day = state.plan.week && state.plan.week[dayName];
     if (!day || day.rest) {
       view.append(el("div", { className: "card rest-card" }, el("div", { className: "big", textContent: "😴" }),
@@ -159,21 +184,28 @@
     }
     view.append(el("h2", { className: "section-title", textContent: day.name || cap(dayName) }));
     if (day.focus) view.append(el("div", { className: "hint", style: "margin:-4px 4px 10px", textContent: day.focus }));
-    for (const ex of day.exercises || []) view.append(await exerciseCard(ex, dayName));
+    const exercises = day.exercises || [];
+    for (let i = 0; i < exercises.length; i++) view.append(await exerciseCard(exercises[i], dayName, editable, i));
   }
 
   // ---------- tabs ----------
   async function renderTab() {
+    const token = ++renderToken;
+    await flushSaves();                                 // persist pending edits before reloading records
+    activeTimers.forEach(clearInterval); activeTimers = []; // stop old animation timers
+    const frag = document.createDocumentFragment();
+    try {
+      if (state.tab === "today") await renderDay(todayName(), frag, true);
+      else if (state.tab === "week") await renderWeek(frag);
+      else if (state.tab === "body") await renderBody(frag);
+      else if (state.tab === "settings") await renderSettings(frag);
+    } catch (e) {
+      frag.append(el("div", { className: "card", textContent: "Error: " + e.message }));
+    }
+    if (token !== renderToken) return;                  // a newer render started; discard this one
     const view = $("#view");
     view.innerHTML = "";
-    try {
-      if (state.tab === "today") await renderDay(todayName(), view);
-      else if (state.tab === "week") await renderWeek(view);
-      else if (state.tab === "body") await renderBody(view);
-      else if (state.tab === "settings") await renderSettings(view);
-    } catch (e) {
-      view.append(el("div", { className: "card", textContent: "Error: " + e.message }));
-    }
+    view.append(frag);
   }
 
   async function renderWeek(view) {
@@ -304,7 +336,7 @@
     const impInput = el("input", { type: "file", accept: "application/json", style: "display:none" });
     impInput.onchange = async () => {
       const f = impInput.files[0]; if (!f) return;
-      try { await DB.importAll(JSON.parse(await f.text())); toast("Data imported"); renderTab(); }
+      try { const r = await DB.importAll(JSON.parse(await f.text())); toast(`Imported ${r.imported}${r.skipped ? ", skipped " + r.skipped : ""}`); renderTab(); }
       catch (e) { toast("Import failed: " + e.message); }
     };
     const imp = el("button", { className: "btn ghost", textContent: "Import data (JSON)" });
