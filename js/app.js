@@ -87,7 +87,7 @@
     const unit = w.unit || "kg";
     if (w.per_hand != null) return { k: "Weight", v: `${w.per_hand} ${unit}`, sub: "per hand" };
     if (w.total != null) return { k: "Weight", v: `${w.total} ${unit}`, sub: "total" };
-    if (w.bodyweight) return { k: "Weight", v: "Bodyweight", sub: "" };
+    // bodyweight exercises: no weight stat (the equipment tag already says "bodyweight").
     return null;
   }
 
