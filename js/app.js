@@ -55,9 +55,14 @@
     const frames = resolveFrames(media);
     if (!frames) { box.append(el("div", { className: "ph", textContent: "No demo — add media: in YAML" })); return box; }
 
-    // No crossOrigin: keep no-cors so custom hosts without CORS headers still render;
-    // sw.js caches the opaque responses for offline.
-    const imgs = frames.map((src, i) => el("img", { src, className: i === 0 ? "on" : "", loading: "lazy" }));
+    // Only the FREE_DB host is known to send CORS headers — request it in CORS mode so
+    // sw.js sees real status (won't cache a 404 as a valid opaque image). Custom hosts
+    // stay no-cors so they still render; sw.js caches those opaque responses for offline.
+    const imgs = frames.map((src, i) => {
+      const img = el("img", { src, className: i === 0 ? "on" : "", loading: "lazy" });
+      if (src.startsWith(FREE_DB)) img.crossOrigin = "anonymous";
+      return img;
+    });
     box.append(...imgs);
     let i = 0, playing = true, timer = null;
     const step = () => { imgs[i].classList.remove("on"); i = (i + 1) % imgs.length; imgs[i].classList.add("on"); };
@@ -86,7 +91,7 @@
     return null;
   }
 
-  async function exerciseCard(ex, dayName, editable, idx) {
+  async function exerciseCard(ex, dayName, editable, idx, firstOfName) {
     const card = el("div", { className: "card" });
     card.append(el("div", { className: "ex-head" }, el("h2", { textContent: ex.name })));
 
@@ -111,7 +116,7 @@
 
     // Logging only on the Today tab — logging another weekday from Week view would
     // key the record to today's date, colliding with today's own log.
-    if (editable) card.append(await logBlock(ex, dayName, idx));
+    if (editable) card.append(await logBlock(ex, dayName, idx, firstOfName));
     return card;
   }
   const stat = (k, v, sub) => el("div", { className: "stat" },
@@ -121,17 +126,17 @@
   function escapeHtml(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
 
   // ---------- logging ----------
-  async function logBlock(ex, dayName, idx) {
+  async function logBlock(ex, dayName, idx, firstOfName) {
     const date = todayISO();
     // idx disambiguates the same exercise appearing twice in one day's plan.
     const key = `${date}|${idx}|${ex.name}`;
     const nSets = Math.max(1, Math.floor(Number(ex.sets)) || 3);
     let rec = await DB.get("logs", key);
-    if (!rec && idx === 0) {
-      // Migrate a record written under the pre-idx key format ("date|name") forward.
-      // Persist under the new key first (durable even if the user never edits it), then drop the old.
+    // Migrate a record written under the pre-idx key format ("date|name") to the FIRST
+    // occurrence of that exercise name today (the old format collided duplicates into one).
+    if (!rec && firstOfName) {
       const legacy = await DB.get("logs", `${date}|${ex.name}`);
-      if (legacy) { rec = Object.assign({}, legacy, { key }); await DB.put("logs", rec); await DB.del("logs", `${date}|${ex.name}`); }
+      if (legacy) { rec = Object.assign({}, legacy, { key }); await DB.rekey("logs", `${date}|${ex.name}`, rec); }
     }
     if (!rec) rec = { key, date, day: dayName, exercise: ex.name, sets: [] };
     if (!Array.isArray(rec.sets)) rec.sets = [];               // tolerate malformed/imported records
@@ -193,7 +198,12 @@
     view.append(el("h2", { className: "section-title", textContent: day.name || cap(dayName) }));
     if (day.focus) view.append(el("div", { className: "hint", style: "margin:-4px 4px 10px", textContent: day.focus }));
     const exercises = day.exercises || [];
-    for (let i = 0; i < exercises.length; i++) view.append(await exerciseCard(exercises[i], dayName, editable, i));
+    const seenNames = new Set();
+    for (let i = 0; i < exercises.length; i++) {
+      const firstOfName = !seenNames.has(exercises[i].name);
+      seenNames.add(exercises[i].name);
+      view.append(await exerciseCard(exercises[i], dayName, editable, i, firstOfName));
+    }
   }
 
   // ---------- tabs ----------

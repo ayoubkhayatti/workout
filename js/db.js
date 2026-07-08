@@ -43,6 +43,23 @@
     put: (store, value) => tx(store, "readwrite").then((s) => wrap(s.put(value))),
     del: (store, key) => tx(store, "readwrite").then((s) => wrap(s.delete(key))),
 
+    // Put `value` and delete `oldKey` in ONE transaction — atomic, so a crash can't
+    // leave both the old and new record behind.
+    rekey(store, oldKey, value) {
+      return open().then(
+        (db) =>
+          new Promise((resolve, reject) => {
+            const t = db.transaction(store, "readwrite");
+            t.oncomplete = resolve;
+            t.onerror = () => reject(t.error);
+            t.onabort = () => reject(t.error);
+            const s = t.objectStore(store);
+            s.put(value);
+            s.delete(oldKey);
+          })
+      );
+    },
+
     // Full backup / restore (Settings → export/import JSON).
     async exportAll() {
       const out = { version: DB_VERSION, exported: new Date().toISOString() };
