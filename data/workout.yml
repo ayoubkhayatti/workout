@@ -1,0 +1,142 @@
+# ============================================================================
+#  SAMPLE workout plan — replace with your own. This is a demo, NOT coaching
+#  or medical advice. Edit this file, push, then Settings → Reload plan.
+#
+#  Schema (all fields optional except name):
+#    title:            app name shown in the header
+#    week:
+#      <weekday>:      sunday..saturday (lowercase)
+#        name:         label for the day
+#        focus:        one-line focus text
+#        rest: true    -> shows a rest card, ignores exercises
+#        exercises:
+#          - name:        exercise name (required)
+#            equipment:   dumbbell | barbell | bodyweight | machine | ...
+#            muscles:     [chest, triceps]        # tags
+#            weight:
+#              per_hand: 12         # dumbbell weight PER HAND
+#              # total: 24          # OR total load
+#              # bodyweight: true   # OR just bodyweight
+#              unit: kg
+#            sets: 3
+#            reps: "8-12"           # string so ranges work
+#            rest: "90s"
+#            tempo: "2-0-1"
+#            progression: "how to get harder over time / your goal"
+#            notes: "cues, setup, safety"
+#            media:                 # exercise animation / demo
+#              db: Dumbbell_Bench_Press   # 2-frame loop from free-exercise-db
+#              # frames: [url0, url1]     # OR your own 2+ image URLs
+#              # gif: https://.../move.gif
+#              # video: https://youtu.be/xxxxxxxxxxx
+#              # interval: 850            # ms between frames
+# ============================================================================
+
+title: My Workout
+
+week:
+  monday:
+    name: Push
+    focus: Chest, shoulders, triceps
+    exercises:
+      - name: Dumbbell Bench Press
+        equipment: dumbbell
+        muscles: [chest, triceps]
+        weight: { per_hand: 12, unit: kg }
+        sets: 4
+        reps: "8-12"
+        rest: "90s"
+        progression: "When you hit 4×12 with clean form, add 2 kg per hand. Goal: 4×10 @ 18 kg/hand."
+        notes: "Feet flat, shoulder blades pinched, lower to mid-chest."
+        media: { db: Dumbbell_Bench_Press }
+
+      - name: Dumbbell Shoulder Press
+        equipment: dumbbell
+        muscles: [shoulders]
+        weight: { per_hand: 8, unit: kg }
+        sets: 3
+        reps: "10-12"
+        rest: "75s"
+        progression: "Add 2 kg/hand once 3×12 is easy."
+        media: { db: Dumbbell_Shoulder_Press }
+
+      - name: Side Lateral Raise
+        equipment: dumbbell
+        muscles: [shoulders]
+        weight: { per_hand: 5, unit: kg }
+        sets: 3
+        reps: "12-15"
+        progression: "Slow tempo before adding weight — form over load here."
+        notes: "Lead with elbows, no swinging."
+        media: { db: Side_Lateral_Raise }
+
+  tuesday: { rest: true, name: Rest, notes: "Walk / light mobility." }
+
+  wednesday:
+    name: Pull + Core
+    focus: Back, biceps, abs
+    exercises:
+      - name: One-Arm Dumbbell Row
+        equipment: dumbbell
+        muscles: [back, lats]
+        weight: { per_hand: 14, unit: kg }
+        sets: 4
+        reps: "10-12"
+        rest: "75s"
+        progression: "Add 2 kg when 4×12 per side is controlled."
+        notes: "Flat back, drive elbow to hip."
+        media: { db: One-Arm_Dumbbell_Row }
+
+      - name: Dumbbell Bicep Curl
+        equipment: dumbbell
+        muscles: [biceps]
+        weight: { per_hand: 8, unit: kg }
+        sets: 3
+        reps: "10-12"
+        media: { db: Dumbbell_Bicep_Curl }
+
+      - name: Plank
+        equipment: bodyweight
+        muscles: [abdominals]
+        weight: { bodyweight: true }
+        sets: 3
+        reps: "45s hold"
+        progression: "Add 10s each week up to 90s."
+        media: { db: Plank }
+
+  thursday: { rest: true, name: Rest }
+
+  friday:
+    name: Legs
+    focus: Quads, hamstrings, glutes
+    exercises:
+      - name: Goblet Squat
+        equipment: dumbbell
+        muscles: [quadriceps, glutes]
+        weight: { total: 20, unit: kg }
+        sets: 4
+        reps: "10-12"
+        rest: "90s"
+        progression: "Add 2.5 kg total once 4×12 is smooth. Then move to split squats."
+        notes: "Hold one dumbbell at chest, sit between heels."
+        media: { db: Goblet_Squat }
+
+      - name: Dumbbell Lunges
+        equipment: dumbbell
+        muscles: [quadriceps, glutes]
+        weight: { per_hand: 10, unit: kg }
+        sets: 3
+        reps: "10 / leg"
+        media: { db: Dumbbell_Lunges }
+
+      - name: Pushups
+        equipment: bodyweight
+        muscles: [chest]
+        weight: { bodyweight: true }
+        sets: 3
+        reps: "AMRAP"
+        progression: "Add 1 rep/set weekly. Video shows form:"
+        media: { video: "https://youtu.be/IODxDxX7oi4" }
+
+  saturday: { rest: true, name: Rest }
+  sunday: { rest: true, name: Rest, notes: "Plan next week." }
