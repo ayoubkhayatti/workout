@@ -1,5 +1,7 @@
 # Workout
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 A tiny, offline-first **workout tracker PWA**. No accounts, no server, no tracking.
 It shows your weekly plan with an **animated demo** for each exercise, dumbbell
 weight (per hand or total), reps, and progression goals — and tracks your body
@@ -55,3 +57,14 @@ media: { db: Dumbbell_Bench_Press }        # 2-frame loop from free-exercise-db
 Plain HTML/CSS/JS, [js-yaml](https://github.com/nodeca/js-yaml) for the plan,
 IndexedDB for storage, a service worker for offline. No build step, no
 dependencies to install.
+
+## License
+Released under the [MIT License](LICENSE) — free to use, modify, and distribute;
+provided as-is, no warranty. © 2026 Ayoub Khayati.
+
+### Third-party
+- [js-yaml](https://github.com/nodeca/js-yaml) — MIT (bundled in `vendor/`).
+- Exercise demo images from [free-exercise-db](https://github.com/yuhonas/free-exercise-db)
+  — public domain (The Unlicense); loaded at runtime, not redistributed here.
+
+Not medical or coaching advice. Train at your own risk.
