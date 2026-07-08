@@ -7,7 +7,7 @@
   const STORES = {
     profile: { keyPath: "id" },      // single record id:"me"
     bodyweight: { keyPath: "date" }, // date: "YYYY-MM-DD", kg: number
-    logs: { keyPath: "key" },        // key: "YYYY-MM-DD|Exercise", sets:[...]
+    logs: { keyPath: "key" },        // key: "YYYY-MM-DD|idx|Exercise", sets:[...]
   };
 
   let _db = null;
@@ -49,24 +49,24 @@
       for (const name of Object.keys(STORES)) out[name] = await DB.getAll(name);
       return out;
     },
-    // Atomic per store: a bad record can't leave a store half-written, and records
-    // missing their keyPath are skipped instead of aborting the whole import.
+    // One transaction per store. Records missing their keyPath, or whose key is an
+    // invalid IndexedDB type (put throws synchronously), are skipped and counted —
+    // one bad record can't abort the store or the remaining stores.
     async importAll(data) {
       const db = await open();
       let imported = 0, skipped = 0;
       for (const [name, opts] of Object.entries(STORES)) {
         const arr = data[name];
         if (!Array.isArray(arr)) continue;
-        const valid = arr.filter((r) => r && typeof r === "object" && r[opts.keyPath] != null);
-        skipped += arr.length - valid.length;
-        imported += valid.length;
+        const candidates = arr.filter((r) => r && typeof r === "object" && r[opts.keyPath] != null);
+        skipped += arr.length - candidates.length;
         await new Promise((resolve, reject) => {
           const t = db.transaction(name, "readwrite");
           t.oncomplete = resolve;
           t.onerror = () => reject(t.error);
           t.onabort = () => reject(t.error || new Error("import aborted: " + name));
           const store = t.objectStore(name);
-          valid.forEach((r) => store.put(r));
+          candidates.forEach((r) => { try { store.put(r); imported++; } catch { skipped++; } });
         });
       }
       return { imported, skipped };
