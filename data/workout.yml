@@ -1,26 +1,26 @@
 # ============================================================================
 #  3-DAY FULL-BODY HYPERTROPHY  —  dumbbells (≤25 kg/hand), bench, rowing machine
+#  Tuned for: early-novice, 39yo male, 189cm, 83kg. Starting loads set near your
+#  current lifts (bench 14/hand, goblet 14, lat raise 4). Volume kept moderate
+#  (~10–12 sets/muscle/week) — beginners grow on less and recover faster.
 #
 #  Why this design (evidence-based):
-#   • Frequency: full-body ×3 trains every muscle ~3×/week. Training a muscle
-#     2–3×/week beats 1× for growth at matched volume (Schoenfeld 2016 meta).
-#   • Volume: ~10–16 hard sets per muscle per week — the range most studies put
-#     near the top of the dose–response curve for hypertrophy.
-#   • Intensity: 6–15 reps taken to ~1–3 reps in reserve (RIR). Growth is similar
-#     across that rep range when effort is high; the 25 kg cap is a non-issue
-#     because higher reps + unilateral work keep every set challenging.
-#   • Progression: DOUBLE PROGRESSION. Add reps until you hit the TOP of the
-#     range on all sets, then +1–2 kg/hand and drop back to the bottom. When you
-#     reach 25 kg/hand and the top reps, slow the tempo (3–4 s lowering) or add
-#     1.5-reps / pauses to keep overloading without more load.
-#   • Recovery: leave a rest day between sessions (e.g. Mon / Wed / Fri).
-#     Every 6–8 weeks take a deload: same lifts, ~2/3 the sets, stop ~4 RIR.
+#   • Frequency: full-body ×3 trains every muscle ~3×/week (beats 1× at matched
+#     volume — Schoenfeld 2016 meta). Perfect for a beginner: more practice reps.
+#   • Volume: ~10–12 hard sets/muscle/week now; add sets later as you advance.
+#   • Intensity: 8–15 reps at ~1–3 reps in reserve (RIR). Effort > load, so the
+#     25 kg cap never limits growth.
+#   • Progression: DOUBLE PROGRESSION. Hit the TOP of the rep range on all sets,
+#     then +1–2 kg/hand and drop to the bottom. As a beginner you'll add weight
+#     often — chase reps every session. At 25 kg/hand + top reps, slow the
+#     lowering (3–4 s) or add pauses to keep overloading.
+#   • Recovery: rest day between sessions (Mon/Wed/Fri). Deload ~every 8 weeks
+#     (2/3 the sets, stop ~4 RIR). Sleep 7–9h.
+#   • Muscle gain lever = food: ~150–165 g protein/day, slight calorie surplus
+#     (+250–400 kcal). The plan is only the stimulus.
 #
-#  Weights below are STARTING SUGGESTIONS — adjust so the last 1–3 reps are hard
-#  but clean. "per_hand" = load in EACH hand.  Rowing machine = warm-up + optional
-#  conditioning finisher (kept light so it doesn't eat recovery).
-#
-#  Schema/field docs: see git history or the app README.
+#  Weights below are your STARTING point — adjust so the last 1–3 reps are hard
+#  but clean. "per_hand" = load in EACH hand. Log every set in the app.
 # ============================================================================
 
 title: Full-Body 3×
@@ -33,90 +33,90 @@ week:
       - name: DB Flat Bench Press
         equipment: dumbbell
         muscles: [chest, triceps]
-        weight: { per_hand: 16, unit: kg }
-        sets: 4
+        weight: { per_hand: 14, unit: kg }
+        sets: 3
         reps: "8-12"
         rest: "90s"
         tempo: "2-0-1"
-        progression: "Add reps to 4×12, then +2 kg/hand. Goal: 4×10 @ 22–25 kg."
+        progression: "Add reps to 3×12, then +2 kg/hand. Long-term goal: 3×10 @ 22–25 kg."
         notes: "Shoulder blades pinched, feet flat, lower to mid-chest, elbows ~45°."
         media: { db: Dumbbell_Bench_Press }
 
       - name: One-Arm DB Row
         equipment: dumbbell
         muscles: [back, lats, biceps]
-        weight: { per_hand: 18, unit: kg }
-        sets: 4
+        weight: { per_hand: 14, unit: kg }
+        sets: 3
         reps: "10-12 / arm"
         rest: "75s"
-        progression: "To 4×12/arm, then +2 kg. At 25 kg add a 1 s squeeze at the top."
+        progression: "To 3×12/arm, then +2 kg. Back handles a lot — expect to climb fast here."
         notes: "Flat back, hand & knee on bench, drive elbow to hip, no torso twist."
         media: { db: One-Arm_Dumbbell_Row }
 
       - name: DB Split Squat
         equipment: dumbbell
         muscles: [quadriceps, glutes]
-        weight: { per_hand: 14, unit: kg }
+        weight: { per_hand: 8, unit: kg }
         sets: 3
         reps: "8-10 / leg"
         rest: "90s"
-        progression: "To 3×10/leg both sides, then +2 kg. Rear foot on floor (or bench = harder)."
-        notes: "Torso tall, front knee tracks over toes, weight through front heel."
+        progression: "Nail balance first, even bodyweight. To 3×10/leg, then +2 kg. Rear foot on floor (bench = harder later)."
+        notes: "Torso tall, front knee over toes, weight through front heel."
         media: { db: Split_Squat_with_Dumbbells }
 
       - name: DB Romanian Deadlift
         equipment: dumbbell
         muscles: [hamstrings, glutes]
-        weight: { per_hand: 18, unit: kg }
+        weight: { per_hand: 14, unit: kg }
         sets: 3
         reps: "10-12"
         rest: "90s"
         tempo: "3-0-1"
-        progression: "To 3×12, then +2 kg. Feel the stretch, not the lower back."
+        progression: "To 3×12, then +2 kg. Feel the hamstring stretch, not the lower back."
         notes: "Soft knees, hinge hips back, DBs graze thighs, neutral spine."
         media: { db: Stiff-Legged_Dumbbell_Deadlift }
 
       - name: DB Shoulder Press
         equipment: dumbbell
         muscles: [shoulders, triceps]
-        weight: { per_hand: 12, unit: kg }
+        weight: { per_hand: 8, unit: kg }
         sets: 3
         reps: "8-12"
         rest: "75s"
-        progression: "To 3×12, then +2 kg. Seated on bench with back support is fine."
+        progression: "To 3×12, then +2 kg. Sit on the bench with back support."
         notes: "Ribs down, don't flare/arch, press slightly in front of head."
         media: { db: Dumbbell_Shoulder_Press }
 
       - name: DB Lateral Raise
         equipment: dumbbell
         muscles: [shoulders]
-        weight: { per_hand: 7, unit: kg }
+        weight: { per_hand: 4, unit: kg }
         sets: 3
         reps: "12-15"
         rest: "45s"
-        progression: "Form first — to 3×15, then +1–2 kg. Half-reps at the end are ok."
+        progression: "Stay strict — to 3×15, then +1–2 kg. Half-reps at the end are fine."
         notes: "Lead with elbows, tiny forward lean, no swinging or shrugging."
         media: { db: Side_Lateral_Raise }
 
       - name: Incline DB Curl
         equipment: dumbbell
         muscles: [biceps]
-        weight: { per_hand: 9, unit: kg }
+        weight: { per_hand: 7, unit: kg }
         sets: 3
         reps: "10-12"
         rest: "60s"
-        progression: "To 3×12, then +1–2 kg. Bench at ~45–60°, arms hang back for stretch."
+        progression: "To 3×12, then +1–2 kg. Bench at ~45–60°, arms hang back for a stretch."
         media: { db: Alternate_Incline_Dumbbell_Curl }
 
       - name: Overhead DB Triceps Extension
         equipment: dumbbell
         muscles: [triceps]
-        weight: { per_hand: 10, unit: kg }
+        weight: { per_hand: 8, unit: kg }
         sets: 3
         reps: "10-12"
         rest: "60s"
-        progression: "Two hands on one DB if heavy. To 3×12, then +2 kg."
-        notes: "Elbows tucked & high, deep stretch behind head."
+        progression: "Two hands on one DB. To 3×12, then +2 kg."
+        notes: "Elbows tucked & high, deep stretch behind the head."
         media: { db: Dumbbell_One-Arm_Triceps_Extension }
 
       - name: Plank
@@ -124,78 +124,78 @@ week:
         muscles: [abdominals, core]
         weight: { bodyweight: true }
         sets: 3
-        reps: "45s hold"
+        reps: "40s hold"
         rest: "45s"
-        progression: "Add 10s/week to 60–90s, then elevate feet or add a DB on the back."
+        progression: "Add 10s/week to 60–90s, then elevate feet or rest a DB on your back."
         media: { db: Plank }
 
   tuesday: { rest: true, name: Rest, notes: "Walk / light mobility. Easy 10-min row if you like." }
 
   wednesday:
     name: Full Body B
-    focus: Row warm-up 5 min → lift. Incline push + hip-dominant. Optional finisher below.
+    focus: Row warm-up 5 min → lift. Incline push + hip-dominant. Optional light row finisher after.
     exercises:
       - name: Incline DB Bench Press
         equipment: dumbbell
         muscles: [chest, shoulders, triceps]
-        weight: { per_hand: 14, unit: kg }
-        sets: 4
+        weight: { per_hand: 12, unit: kg }
+        sets: 3
         reps: "8-12"
         rest: "90s"
         tempo: "2-0-1"
-        progression: "To 4×12, then +2 kg. Bench at 30°, not steeper (that's a shoulder press)."
+        progression: "To 3×12, then +2 kg. Bench at 30°, not steeper (that becomes a shoulder press)."
         notes: "Same cues as flat bench; targets upper chest."
         media: { db: Incline_Dumbbell_Press }
 
       - name: Chest-Supported DB Row
         equipment: dumbbell
         muscles: [back, lats, rear delts]
-        weight: { per_hand: 16, unit: kg }
-        sets: 4
+        weight: { per_hand: 12, unit: kg }
+        sets: 3
         reps: "10-12"
         rest: "75s"
-        progression: "To 4×12, then +2 kg. Chest on an inclined bench removes momentum."
+        progression: "To 3×12, then +2 kg. Chest on the incline bench kills momentum = cleaner back work."
         notes: "Face-down on 30° bench, row both DBs to hips, squeeze shoulder blades."
         media: { db: Dumbbell_Incline_Row }
 
       - name: Goblet Squat
         equipment: dumbbell
         muscles: [quadriceps, glutes]
-        weight: { total: 24, unit: kg }
+        weight: { total: 14, unit: kg }
         sets: 3
         reps: "10-12"
         rest: "90s"
-        progression: "Hold one DB at chest. Maxed at 25 kg? Switch to a 3–4 s descent, then to split squats."
+        progression: "One DB at chest. To 3×12, then +2 kg. Nearing 25 kg? Add a 3–4 s descent, then move to split squats."
         notes: "Sit down between the heels, torso upright, knees out."
         media: { db: Goblet_Squat }
 
       - name: DB Romanian Deadlift
         equipment: dumbbell
         muscles: [hamstrings, glutes]
-        weight: { per_hand: 20, unit: kg }
+        weight: { per_hand: 16, unit: kg }
         sets: 3
         reps: "8-10"
         rest: "90s"
         tempo: "3-0-1"
-        progression: "Heavier/lower-rep than Monday. To 3×10, then +2 kg (cap 25)."
+        progression: "A touch heavier / lower reps than Monday. To 3×10, then +2 kg (cap 25)."
         notes: "Same hinge; brace hard, control the stretch."
         media: { db: Stiff-Legged_Dumbbell_Deadlift }
 
       - name: DB Reverse Flye
         equipment: dumbbell
         muscles: [rear delts, back]
-        weight: { per_hand: 6, unit: kg }
+        weight: { per_hand: 4, unit: kg }
         sets: 3
         reps: "15"
         rest: "45s"
         progression: "Light and strict. To 3×15 clean, then +1 kg."
-        notes: "Hinge forward, slight elbow bend, lift to the sides, pause at top."
+        notes: "Hinge forward, slight elbow bend, lift to the sides, pause at the top."
         media: { db: Reverse_Flyes }
 
       - name: DB Lateral Raise
         equipment: dumbbell
         muscles: [shoulders]
-        weight: { per_hand: 7, unit: kg }
+        weight: { per_hand: 4, unit: kg }
         sets: 3
         reps: "12-15"
         rest: "45s"
@@ -205,23 +205,23 @@ week:
       - name: DB Skullcrusher
         equipment: dumbbell
         muscles: [triceps]
-        weight: { per_hand: 9, unit: kg }
+        weight: { per_hand: 7, unit: kg }
         sets: 3
         reps: "10-12"
         rest: "60s"
-        progression: "Lying on bench. To 3×12, then +2 kg. Stop if elbows ache."
-        notes: "Lower DBs beside the ears, elbows pointing up, keep them still."
+        progression: "Lying on the bench. To 3×12, then +2 kg. Stop if elbows ache."
+        notes: "Lower DBs beside the ears, elbows point up and stay still."
         media: { db: Lying_Dumbbell_Tricep_Extension }
 
       - name: Standing DB Calf Raise
         equipment: dumbbell
         muscles: [calves]
-        weight: { per_hand: 20, unit: kg }
+        weight: { per_hand: 14, unit: kg }
         sets: 3
         reps: "12-20"
         rest: "45s"
         tempo: "1-1-1"
-        progression: "One DB, one leg at a time on a step for range, or 2 DBs both legs. To 3×20, then +2 kg."
+        progression: "One leg on a step for full range, or 2 DBs both legs. To 3×20, then +2 kg."
         notes: "Full stretch at the bottom, pause 1 s at the top."
         media: { db: Calf_Raise_On_A_Dumbbell }
 
@@ -232,42 +232,42 @@ week:
         sets: 3
         reps: "10 / side"
         rest: "45s"
-        progression: "Slow and controlled; lower back stays flat on the floor. Add a light DB in hands to progress."
+        progression: "Slow and controlled; lower back stays flat. Add a light DB in the hands to progress."
         media: { db: Dead_Bug }
 
   thursday: { rest: true, name: Rest, notes: "Full rest or easy 15-20 min row (zone 2)." }
 
   friday:
     name: Full Body C
-    focus: Row warm-up 5 min → lift. Chest volume + single-leg. Optional finisher below.
+    focus: Row warm-up 5 min → lift. Chest volume + single-leg. Optional light row finisher after.
     exercises:
       - name: DB Flat Bench Press
         equipment: dumbbell
         muscles: [chest, triceps]
-        weight: { per_hand: 16, unit: kg }
+        weight: { per_hand: 14, unit: kg }
         sets: 3
         reps: "8-12"
         rest: "90s"
-        progression: "Third weekly chest hit — beat one number vs Monday (rep or load)."
+        progression: "Third weekly chest hit — beat one number vs Monday (a rep or the load)."
         media: { db: Dumbbell_Bench_Press }
 
       - name: DB Flye
         equipment: dumbbell
         muscles: [chest]
-        weight: { per_hand: 8, unit: kg }
+        weight: { per_hand: 6, unit: kg }
         sets: 3
         reps: "12-15"
         rest: "60s"
         tempo: "3-0-1"
-        progression: "Stretch-focused. To 3×15, then +1–2 kg. Don't go too heavy — protect shoulders."
+        progression: "Stretch-focused. To 3×15, then +1–2 kg. Don't chase heavy here — protect the shoulders."
         notes: "Soft elbows fixed, open wide for a big chest stretch, hug back up."
         media: { db: Dumbbell_Flyes }
 
       - name: One-Arm DB Row
         equipment: dumbbell
         muscles: [back, lats, biceps]
-        weight: { per_hand: 18, unit: kg }
-        sets: 4
+        weight: { per_hand: 14, unit: kg }
+        sets: 3
         reps: "10-12 / arm"
         rest: "75s"
         progression: "Match/beat Monday. Then +2 kg."
@@ -276,29 +276,29 @@ week:
       - name: DB Reverse Lunge
         equipment: dumbbell
         muscles: [quadriceps, glutes]
-        weight: { per_hand: 12, unit: kg }
+        weight: { per_hand: 8, unit: kg }
         sets: 3
         reps: "10 / leg"
         rest: "75s"
-        progression: "Step back (easier on knees than forward). To 3×10/leg, then +2 kg."
+        progression: "Step back (kinder on knees than forward). To 3×10/leg, then +2 kg."
         notes: "Long step, torso tall, push through the front heel to stand."
         media: { db: Dumbbell_Lunges }
 
       - name: Single-Leg DB RDL
         equipment: dumbbell
         muscles: [hamstrings, glutes]
-        weight: { per_hand: 10, unit: kg }
+        weight: { per_hand: 6, unit: kg }
         sets: 3
         reps: "10-12 / leg"
         rest: "60s"
-        progression: "Balance + hamstring. To 3×12/leg, then +2 kg. Great glute/ham with light load."
+        progression: "Balance + hamstring/glute. To 3×12/leg, then +2 kg. Big effect from light load."
         notes: "Hinge on one leg, other leg extends back, hips level, slow and controlled."
         media: { db: Stiff-Legged_Dumbbell_Deadlift }
 
       - name: DB Shoulder Press
         equipment: dumbbell
         muscles: [shoulders, triceps]
-        weight: { per_hand: 12, unit: kg }
+        weight: { per_hand: 8, unit: kg }
         sets: 3
         reps: "8-12"
         rest: "75s"
@@ -308,7 +308,7 @@ week:
       - name: Hammer Curl
         equipment: dumbbell
         muscles: [biceps, forearms]
-        weight: { per_hand: 10, unit: kg }
+        weight: { per_hand: 8, unit: kg }
         sets: 3
         reps: "10-12"
         rest: "60s"
@@ -318,7 +318,7 @@ week:
       - name: DB Triceps Kickback
         equipment: dumbbell
         muscles: [triceps]
-        weight: { per_hand: 8, unit: kg }
+        weight: { per_hand: 4, unit: kg }
         sets: 3
         reps: "12-15"
         rest: "45s"
