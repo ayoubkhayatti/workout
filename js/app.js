@@ -50,12 +50,14 @@
         : el("video", { src: media.video, controls: true, playsInline: true, loop: true, muted: true }));
       return box;
     }
-    if (media && media.gif) { box.append(el("img", { src: media.gif, crossOrigin: "anonymous", className: "on", loading: "lazy" })); return box; }
+    if (media && media.gif) { box.append(el("img", { src: media.gif, className: "on", loading: "lazy" })); return box; }
 
     const frames = resolveFrames(media);
     if (!frames) { box.append(el("div", { className: "ph", textContent: "No demo — add media: in YAML" })); return box; }
 
-    const imgs = frames.map((src, i) => el("img", { src, crossOrigin: "anonymous", className: i === 0 ? "on" : "", loading: "lazy" }));
+    // No crossOrigin: keep no-cors so custom hosts without CORS headers still render;
+    // sw.js caches the opaque responses for offline.
+    const imgs = frames.map((src, i) => el("img", { src, className: i === 0 ? "on" : "", loading: "lazy" }));
     box.append(...imgs);
     let i = 0, playing = true, timer = null;
     const step = () => { imgs[i].classList.remove("on"); i = (i + 1) % imgs.length; imgs[i].classList.add("on"); };
@@ -125,6 +127,12 @@
     const key = `${date}|${idx}|${ex.name}`;
     const nSets = Math.max(1, Math.floor(Number(ex.sets)) || 3);
     let rec = await DB.get("logs", key);
+    if (!rec && idx === 0) {
+      // Migrate a record written under the pre-idx key format ("date|name") forward.
+      // Persist under the new key first (durable even if the user never edits it), then drop the old.
+      const legacy = await DB.get("logs", `${date}|${ex.name}`);
+      if (legacy) { rec = Object.assign({}, legacy, { key }); await DB.put("logs", rec); await DB.del("logs", `${date}|${ex.name}`); }
+    }
     if (!rec) rec = { key, date, day: dayName, exercise: ex.name, sets: [] };
     if (!Array.isArray(rec.sets)) rec.sets = [];               // tolerate malformed/imported records
     while (rec.sets.length < nSets) rec.sets.push({ weight: "", reps: "", done: false });
