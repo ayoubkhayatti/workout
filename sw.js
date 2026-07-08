@@ -2,7 +2,7 @@
    App shell: stale-while-revalidate (offline, but self-updates on next load).
    workout.yml: network-first (see edits fast).
    Exercise images: stale-while-revalidate (offline after first view). */
-const VERSION = "v2";
+const VERSION = "v3";
 const SHELL = "shell-" + VERSION;
 const MEDIA = "media-" + VERSION;
 const SHELL_FILES = [
@@ -51,8 +51,11 @@ self.addEventListener("fetch", (e) => {
     e.respondWith(
       caches.open(MEDIA).then(async (c) => {
         const hit = await c.match(req);
+        // An opaque cached response returned to a cors-mode request becomes a network
+        // error, so ignore a stale opaque entry for cors requests and refetch.
+        const good = hit && !(req.mode === "cors" && hit.type === "opaque") ? hit : null;
         const net = fetch(req).then((res) => { if (res.ok || res.type === "opaque") c.put(req, res.clone()); return res; }).catch(() => hit);
-        return hit || net;
+        return good || net;
       })
     );
     return;
