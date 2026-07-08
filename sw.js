@@ -1,7 +1,8 @@
 /* sw.js — offline support.
-   App shell: cache-first.  workout.yml: network-first (see edits fast).
+   App shell: stale-while-revalidate (offline, but self-updates on next load).
+   workout.yml: network-first (see edits fast).
    Exercise images: stale-while-revalidate (offline after first view). */
-const VERSION = "v1";
+const VERSION = "v2";
 const SHELL = "shell-" + VERSION;
 const MEDIA = "media-" + VERSION;
 const SHELL_FILES = [
@@ -34,27 +35,36 @@ self.addEventListener("fetch", (e) => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
 
-  // Plan file: always try network first so edits show up; fall back to cache.
-  if (url.pathname.endsWith("workout.yml") || url.pathname.endsWith(".yml")) {
+  // Plan file: always try network first so edits show up; fall back to cache
+  // (ignoreSearch so a fallback still matches even if a query string is present).
+  if (url.pathname.endsWith(".yml")) {
     e.respondWith(
       fetch(req).then((res) => { const cp = res.clone(); caches.open(SHELL).then((c) => c.put(req, cp)); return res; })
-        .catch(() => caches.match(req))
+        .catch(() => caches.match(req, { ignoreSearch: true }))
     );
     return;
   }
 
-  // Exercise images (external): stale-while-revalidate.
+  // Exercise images (external): stale-while-revalidate. Cache opaque responses too
+  // so no-cors images still work offline after first view.
   if (/\.(jpg|jpeg|png|gif|webp)$/i.test(url.pathname) && url.origin !== self.location.origin) {
     e.respondWith(
       caches.open(MEDIA).then(async (c) => {
         const hit = await c.match(req);
-        const net = fetch(req).then((res) => { if (res.ok) c.put(req, res.clone()); return res; }).catch(() => hit);
+        const net = fetch(req).then((res) => { if (res.ok || res.type === "opaque") c.put(req, res.clone()); return res; }).catch(() => hit);
         return hit || net;
       })
     );
     return;
   }
 
-  // App shell + same-origin: cache-first.
-  e.respondWith(caches.match(req).then((hit) => hit || fetch(req)));
+  // App shell + same-origin: stale-while-revalidate — serve cache fast, refresh in
+  // background so a pushed fix lands on the next load without bumping VERSION.
+  e.respondWith(
+    caches.open(SHELL).then(async (c) => {
+      const hit = await c.match(req);
+      const net = fetch(req).then((res) => { if (res.ok) c.put(req, res.clone()); return res; }).catch(() => hit);
+      return hit || net;
+    })
+  );
 });

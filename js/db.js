@@ -49,11 +49,27 @@
       for (const name of Object.keys(STORES)) out[name] = await DB.getAll(name);
       return out;
     },
+    // Atomic per store: a bad record can't leave a store half-written, and records
+    // missing their keyPath are skipped instead of aborting the whole import.
     async importAll(data) {
-      for (const name of Object.keys(STORES)) {
-        if (!Array.isArray(data[name])) continue;
-        for (const rec of data[name]) await DB.put(name, rec);
+      const db = await open();
+      let imported = 0, skipped = 0;
+      for (const [name, opts] of Object.entries(STORES)) {
+        const arr = data[name];
+        if (!Array.isArray(arr)) continue;
+        const valid = arr.filter((r) => r && typeof r === "object" && r[opts.keyPath] != null);
+        skipped += arr.length - valid.length;
+        imported += valid.length;
+        await new Promise((resolve, reject) => {
+          const t = db.transaction(name, "readwrite");
+          t.oncomplete = resolve;
+          t.onerror = () => reject(t.error);
+          t.onabort = () => reject(t.error || new Error("import aborted: " + name));
+          const store = t.objectStore(name);
+          valid.forEach((r) => store.put(r));
+        });
       }
+      return { imported, skipped };
     },
     async clearAll() {
       const db = await open();
