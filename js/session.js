@@ -172,7 +172,7 @@
     else renderFinish();
   }
 
-  function header(sub) {
+  function header(sub, showClock = true) {
     const exit = el("button", { className: "s-icon", textContent: "✕" });
     exit.onclick = () => { if (confirm("End workout?")) cleanup(); };
     const snd = el("button", { className: "s-icon", textContent: soundOn() ? "🔊" : "🔇" });
@@ -181,10 +181,15 @@
       snd.textContent = soundOn() ? "🔊" : "🔇";
       if (soundOn()) ensureAudio();
     };
-    const clk = el("span", { className: "s-clock", textContent: fmtT(Date.now() - S.startedAt) });
-    const t = setInterval(() => { clk.textContent = fmtT(Date.now() - S.startedAt); }, 1000);
-    S.timers.push(t);
-    return el("div", { className: "s-head" }, exit, el("span", { className: "s-sub", textContent: sub }), clk, snd);
+    const kids = [exit, el("span", { className: "s-sub", textContent: sub })];
+    if (showClock) {
+      const clk = el("span", { className: "s-clock", textContent: fmtT(Date.now() - S.startedAt) });
+      const t = setInterval(() => { clk.textContent = fmtT(Date.now() - S.startedAt); }, 1000);
+      S.timers.push(t);
+      kids.push(clk);
+    }
+    kids.push(snd);
+    return el("div", { className: "s-head" }, ...kids);
   }
 
   function stepper(label, input, step) {
@@ -210,7 +215,7 @@
     const set = entry.rec.sets[s];
     const prevSet = entry.prev && entry.prev.sets && entry.prev.sets[s];
 
-    S.root.append(header(`Exercise ${e + 1}/${S.entries.length} · Set ${s + 1}/${entry.nSets}`));
+    S.root.append(header(`Exercise ${e + 1}/${S.entries.length} · Set ${s + 1}/${entry.nSets}`, false));
     S.root.append(el("h2", { className: "s-name", textContent: ex.name }));
     const target = [ex.reps != null ? `${ex.reps} reps` : null, ex.tempo ? `tempo ${ex.tempo}` : null]
       .filter(Boolean).join(" · ");
@@ -234,11 +239,17 @@
     S.root.append(el("div", { className: "s-inputs" }, stepper("kg", wIn, 1), stepper("reps", rIn, 1)));
 
     // count-up since this set's screen appeared — pacing for timed holds (plank etc.)
-    const setClk = el("div", { className: "s-settimer", textContent: "set 0:00" });
+    const setV = el("div", { className: "v", textContent: "0:00" });
+    const totV = el("div", { className: "v", textContent: fmtT(Date.now() - S.startedAt) });
     const setStart = Date.now();
-    const st = setInterval(() => { setClk.textContent = "set " + fmtT(Date.now() - setStart); }, 1000);
+    const st = setInterval(() => {
+      setV.textContent = fmtT(Date.now() - setStart);
+      totV.textContent = fmtT(Date.now() - S.startedAt);
+    }, 1000);
     S.timers.push(st);
-    S.root.append(setClk);
+    S.root.append(el("div", { className: "s-timers" },
+      el("div", { className: "s-timer main" }, el("div", { className: "k", textContent: "Set" }), setV),
+      el("div", { className: "s-timer" }, el("div", { className: "k", textContent: "Workout" }), totV)));
 
     const done = el("button", { className: "s-done", textContent: "DONE ✓" });
     done.onclick = async () => {
