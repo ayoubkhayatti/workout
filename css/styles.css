@@ -265,14 +265,33 @@ button.btn + button.btn { margin-top: 10px; }
     padding: 10px calc(env(safe-area-inset-right) + 14px)
              calc(env(safe-area-inset-bottom) + 10px) calc(env(safe-area-inset-left) + 14px);
   }
+  .session { row-gap: 6px; }
   .session > * { grid-column: 2; }
   .s-head { grid-column: 1 / -1; }
   .session.done { display: flex; flex-direction: column; }
+
+  /* Work screen: 3 columns — media | steppers | timers — so the stack under
+     DONE fits without scrolling on a ~430px-tall phone. */
+  .session.work { grid-template-columns: 40% 1fr 1fr; }
+  .session.work > * { grid-column: 2 / -1; }
+  .session.work .s-head { grid-column: 1 / -1; }
   .session.work .media { grid-column: 1; grid-row: 2 / span 8; aspect-ratio: auto; height: 100%; min-height: 0; }
+  .session.work .s-inputs { grid-column: 2; grid-template-columns: 1fr; gap: 6px; }
+  .session.work .s-timers { grid-column: 3; grid-template-columns: 1fr; gap: 6px; align-content: start; }
+  .s-name { font-size: 20px; }
+  .s-timer { padding: 4px 10px 6px; }
+  .s-timer .v { font-size: 26px; }
+  .s-stepper { grid-template-columns: 56px 1fr 56px; }
+  .s-stepper input, .s-step { min-height: 48px; font-size: 22px; }
+  .s-done { min-height: 56px; padding: 10px; font-size: 18px; }
+  .s-skip { min-height: 48px; font-size: 15px; }
+
   .session.rest .cd { grid-column: 1; grid-row: 2 / span 6; align-self: center; font-size: clamp(56px, 16vh, 110px); }
-  .session.rest .media { max-height: 34vh; aspect-ratio: auto; }
-  .s-done { min-height: 64px; padding: 12px; }
-  .s-restbtns .btn { min-height: 64px; }
+  /* explicit height: the box only holds absolutely-positioned imgs, so with
+     aspect-ratio:auto and no height it collapses to 0 and the gif vanishes */
+  .session.rest .media { height: 30vh; aspect-ratio: auto; }
+  .s-restbtns { gap: 8px; }
+  .s-restbtns .btn { min-height: 60px; font-size: 17px; }
 }
 
 /* Safe areas on the sides (landscape notch / home bar). */
