@@ -294,7 +294,7 @@
     };
     const plus = el("button", { className: "btn ghost", textContent: "+30s" });
     plus.onclick = () => { if (S.paused) S.remaining += 30000; else { S.endAt += 30000; S.lastSec = null; } };
-    const skip = el("button", { className: "btn", textContent: "Skip rest" });
+    const skip = el("button", { className: "btn skiprest", textContent: "Skip rest ▶" });
     skip.onclick = goWork;
     S.root.append(el("div", { className: "s-restbtns" }, pause, plus, skip));
 
