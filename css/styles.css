@@ -198,7 +198,15 @@ button.btn + button.btn { margin-top: 10px; }
 }
 .s-setchip.done { color: var(--good); border-color: var(--good); }
 .s-setchip.cur { color: var(--accent); border-color: var(--accent); }
-.s-settimer { text-align: center; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.s-timers { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.s-timer {
+  background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: 12px; padding: 8px 12px 10px; text-align: center;
+}
+.s-timer .k { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.s-timer .v { font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.15; }
+.s-timer.main { border-color: var(--accent-dim); }
+.s-timer.main .v { color: var(--accent); }
 .s-skiprow { display: flex; justify-content: space-between; }
 .s-icon {
   background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
