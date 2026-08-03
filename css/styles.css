@@ -270,15 +270,19 @@ button.btn + button.btn { margin-top: 10px; }
   .s-head { grid-column: 1 / -1; }
   .session.done { display: flex; flex-direction: column; }
 
-  /* Work screen: 3 columns — media | steppers | timers. Name+target share a
-     row, each timer tile matches a stepper block's height, so the whole
-     screen fits a ~430px-tall phone without scrolling. */
-  .session.work { grid-template-columns: 40% 1fr 1fr; }
+  /* Work screen: 3 columns — media | steppers | timers — on a full-height
+     template. The 1fr row absorbs all slack so DONE + skips pin to the
+     bottom and no dead strip is left anywhere. */
+  .session.work {
+    grid-template-columns: 42% 1fr 1fr;
+    grid-template-rows: auto auto auto 1fr auto auto;
+  }
   .session.work > * { grid-column: 2 / -1; }
   .session.work .s-head { grid-column: 1 / -1; }
-  .session.work .media { grid-column: 1; grid-row: 2 / span 8; aspect-ratio: auto; height: 100%; min-height: 0; }
+  .session.work .media { grid-column: 1; grid-row: 2 / span 5; aspect-ratio: auto; height: 100%; min-height: 0; }
   .session.work .s-name { grid-column: 2; align-self: center; }
   .session.work .s-target { grid-column: 3; align-self: center; text-align: right; }
+  .session.work .s-inputs, .session.work .s-timers { align-self: start; }
   .session.work .s-inputs { grid-column: 2; grid-template-columns: 1fr; gap: 6px; }
   /* Timer tiles rebuilt with stepper anatomy — 12px label above, 48px box
      below, same margins — so their edges line up with the kg/reps inputs. */
@@ -301,11 +305,18 @@ button.btn + button.btn { margin-top: 10px; }
   .s-done { min-height: 54px; padding: 8px; font-size: 18px; }
   .s-skip { min-height: 44px; font-size: 15px; }
 
-  /* Rest screen: gif is the big left hero (preview the next move), countdown
-     sits on the right above the buttons. Explicit height on media — the box
-     only holds absolutely-positioned imgs, no height means it collapses. */
-  .session.rest .media { grid-column: 1; grid-row: 2 / span 6; height: 100%; aspect-ratio: auto; min-height: 0; }
-  .session.rest .cd { grid-column: 2; align-self: center; font-size: clamp(64px, 22vh, 128px); line-height: 1; }
+  /* Rest screen: gif fills the whole left column top-to-bottom, the countdown
+     owns the flexible right row and scales to it, buttons pin to the bottom.
+     Explicit heights everywhere — the media box only holds absolutely
+     positioned imgs and collapses without one. */
+  .session.rest {
+    grid-template-columns: 42% 1fr;
+    grid-template-rows: auto 1fr auto auto;
+  }
+  .session.rest .media { grid-column: 1; grid-row: 2 / span 3; height: 100%; aspect-ratio: auto; min-height: 0; }
+  .session.rest .cd { grid-column: 2; grid-row: 2; align-self: center; font-size: min(34vh, 14vw); line-height: 1; }
+  .session.rest .s-nextup { grid-column: 2; grid-row: 3; }
+  .session.rest .s-restbtns { grid-column: 2; grid-row: 4; }
   .s-restbtns { gap: 8px; }
   .s-restbtns .btn { min-height: 60px; font-size: 17px; }
 }
