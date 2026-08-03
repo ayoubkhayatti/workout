@@ -41,7 +41,7 @@
     if (media.db) return [FREE_DB + media.db + "/0.jpg", FREE_DB + media.db + "/1.jpg"];
     return null;
   }
-  function buildMedia(media) {
+  function buildMedia(media, timers = activeTimers) {
     const box = el("div", { className: "media" });
     if (media && media.video) {
       const yt = ytEmbed(media.video);
@@ -66,7 +66,7 @@
     box.append(...imgs);
     let i = 0, playing = true, timer = null;
     const step = () => { imgs[i].classList.remove("on"); i = (i + 1) % imgs.length; imgs[i].classList.add("on"); };
-    const start = () => { if (imgs.length > 1) { timer = setInterval(step, media && media.interval || 850); activeTimers.push(timer); } };
+    const start = () => { if (imgs.length > 1) { timer = setInterval(step, media && media.interval || 850); timers.push(timer); } };
     const toggle = el("button", { className: "frame-toggle", textContent: "⏸" });
     toggle.onclick = () => {
       playing = !playing;
@@ -97,6 +97,7 @@
 
     const tags = el("div", { className: "ex-tags" });
     if (ex.equipment) tags.append(el("span", { className: "tag equip", textContent: ex.equipment }));
+    if (ex.superset) tags.append(el("span", { className: "tag equip", textContent: "superset ↓" }));
     (ex.muscles || []).forEach((m) => tags.append(el("span", { className: "tag", textContent: m })));
     if (tags.children.length) card.append(tags);
 
@@ -198,6 +199,11 @@
     view.append(el("h2", { className: "section-title", textContent: day.name || cap(dayName) }));
     if (day.focus) view.append(el("div", { className: "hint", style: "margin:-4px 4px 10px", textContent: day.focus }));
     const exercises = day.exercises || [];
+    if (editable && exercises.length) {
+      const start = el("button", { className: "btn start-session", textContent: "▶ Start guided workout" });
+      start.onclick = () => window.Session.start(dayName, exercises);
+      view.append(start);
+    }
     const seenNames = new Set();
     for (let i = 0; i < exercises.length; i++) {
       const firstOfName = !seenNames.has(exercises[i].name);
@@ -406,6 +412,9 @@
     renderTab();
     if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
   }
+
+  // Shared with session.js (guided workout player).
+  window.AppBridge = { buildMedia, renderTab };
 
   boot();
 })();

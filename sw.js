@@ -2,7 +2,7 @@
    App shell: stale-while-revalidate (offline, but self-updates on next load).
    workout.yml: network-first (see edits fast).
    Exercise images: stale-while-revalidate (offline after first view). */
-const VERSION = "v3";
+const VERSION = "v4";
 const SHELL = "shell-" + VERSION;
 const MEDIA = "media-" + VERSION;
 const SHELL_FILES = [
@@ -11,6 +11,7 @@ const SHELL_FILES = [
   "css/styles.css",
   "js/db.js",
   "js/app.js",
+  "js/session.js",
   "vendor/js-yaml.min.js",
   "manifest.webmanifest",
   "icons/icon-192.png",
