@@ -167,6 +167,7 @@
   function render() {
     S.timers.forEach(clearInterval); S.timers = [];
     S.root.innerHTML = "";
+    S.root.className = "session " + S.phase;   // phase class drives the landscape grid
     if (S.phase === "work") renderWork();
     else if (S.phase === "rest") renderRest();
     else renderFinish();

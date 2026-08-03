@@ -256,6 +256,30 @@ button.btn + button.btn { margin-top: 10px; }
 .s-finish .big { font-size: 56px; }
 .start-session { margin-bottom: 14px; }
 
+/* Landscape (phone on its side, propped): split the player into two columns —
+   demo/countdown left, controls right — so nothing needs scrolling mid-set. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .session {
+    display: grid; grid-template-columns: 44% 1fr; column-gap: 16px; row-gap: 8px;
+    align-content: start; max-width: none;
+    padding: 10px calc(env(safe-area-inset-right) + 14px)
+             calc(env(safe-area-inset-bottom) + 10px) calc(env(safe-area-inset-left) + 14px);
+  }
+  .session > * { grid-column: 2; }
+  .s-head { grid-column: 1 / -1; }
+  .session.done { display: flex; flex-direction: column; }
+  .session.work .media { grid-column: 1; grid-row: 2 / span 8; aspect-ratio: auto; height: 100%; min-height: 0; }
+  .session.rest .cd { grid-column: 1; grid-row: 2 / span 6; align-self: center; font-size: clamp(56px, 16vh, 110px); }
+  .session.rest .media { max-height: 34vh; aspect-ratio: auto; }
+  .s-done { min-height: 64px; padding: 12px; }
+  .s-restbtns .btn { min-height: 64px; }
+}
+
+/* Safe areas on the sides (landscape notch / home bar). */
+.topbar { padding-left: calc(env(safe-area-inset-left) + 16px); padding-right: calc(env(safe-area-inset-right) + 16px); }
+main { padding-left: calc(env(safe-area-inset-left) + 16px); padding-right: calc(env(safe-area-inset-right) + 16px); }
+.tabbar { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+
 .muted { color: var(--muted); }
 .hint { font-size: 13px; color: var(--muted); margin-top: 8px; }
 .center { text-align: center; }

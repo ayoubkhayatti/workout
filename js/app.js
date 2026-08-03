@@ -4,7 +4,7 @@
 
   // Bump on every release, together with VERSION in sw.js — Settings shows it so a
   // manual refresh is verifiable against the latest change.
-  const APP_VERSION = "v10 (2026-08-03) — huge rest buttons";
+  const APP_VERSION = "v11 (2026-08-03) — landscape support";
 
   const DAYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
   const FREE_DB = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
