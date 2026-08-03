@@ -280,6 +280,29 @@ button.btn + button.btn { margin-top: 10px; }
 main { padding-left: calc(env(safe-area-inset-left) + 16px); padding-right: calc(env(safe-area-inset-right) + 16px); }
 .tabbar { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 
+/* Landscape main app: tabs move to a left rail (bottom bar wasted the short
+   height), the feed becomes two columns, media loses height. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .tabbar {
+    top: 0; bottom: 0; left: 0; right: auto;
+    width: calc(env(safe-area-inset-left) + 76px);
+    height: auto;
+    grid-template-columns: 1fr; grid-auto-rows: 1fr;
+    border-top: 0; border-right: 1px solid var(--line);
+    padding: 0 0 0 env(safe-area-inset-left);
+  }
+  .topbar { padding-left: calc(env(safe-area-inset-left) + 92px); }
+  main {
+    max-width: none;
+    padding-left: calc(env(safe-area-inset-left) + 92px);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 16px);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start;
+  }
+  main > .section-title, main > .hint, main > .start-session, main > .loading { grid-column: 1 / -1; }
+  .card { margin-bottom: 0; }
+  main .media { aspect-ratio: 16/9; }
+}
+
 .muted { color: var(--muted); }
 .hint { font-size: 13px; color: var(--muted); margin-top: 8px; }
 .center { text-align: center; }
