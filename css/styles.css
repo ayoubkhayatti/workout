@@ -176,6 +176,54 @@ button.btn + button.btn { margin-top: 10px; }
 .kpi .k { font-size: 12px; color: var(--muted); }
 .kpi .v { font-size: 20px; font-weight: 700; }
 
+/* Guided workout session */
+.session {
+  position: fixed; inset: 0; z-index: 30;
+  background: var(--bg); color: var(--text);
+  display: flex; flex-direction: column; gap: 10px;
+  padding: calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 16px);
+  max-width: 720px; margin: 0 auto; overflow-y: auto;
+}
+.s-head { display: flex; align-items: center; justify-content: space-between; }
+.s-sub { font-size: 13px; color: var(--muted); }
+.s-icon {
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
+  border-radius: 999px; width: 40px; height: 40px; font-size: 16px; cursor: pointer;
+}
+.s-name { margin: 0; font-size: 26px; }
+.s-target { font-size: 14px; color: var(--muted); }
+.session .media { flex-shrink: 0; aspect-ratio: 16/10; margin: 0; }
+.s-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.s-field label { display: block; font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 4px; }
+.s-stepper { display: grid; grid-template-columns: 52px 1fr 52px; gap: 6px; }
+.s-stepper input {
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
+  border-radius: 10px; font-size: 22px; font-weight: 700; text-align: center; padding: 10px 4px; width: 100%;
+}
+.s-step {
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
+  border-radius: 10px; font-size: 22px; cursor: pointer;
+}
+.s-done {
+  background: var(--good); color: #04150e; border: 0; border-radius: 14px;
+  padding: 20px; font-size: 20px; font-weight: 800; cursor: pointer; width: 100%;
+  margin-top: auto;
+}
+.s-skip { background: none; border: 0; color: var(--muted); font-size: 14px; padding: 10px; cursor: pointer; }
+.cd {
+  font-size: clamp(72px, 28vw, 140px); font-weight: 800; text-align: center;
+  font-variant-numeric: tabular-nums; line-height: 1.1;
+}
+.cd.paused { color: var(--warn); }
+.s-nextup { text-align: center; }
+.s-nextup .k { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.s-nextup .v { font-size: 17px; font-weight: 600; }
+.s-restbtns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: auto; }
+.s-restbtns .btn + .btn { margin-top: 0; }
+.s-finish { text-align: center; margin: auto 0; }
+.s-finish .big { font-size: 56px; }
+.start-session { margin-bottom: 14px; }
+
 .muted { color: var(--muted); }
 .hint { font-size: 13px; color: var(--muted); margin-top: 8px; }
 .center { text-align: center; }
