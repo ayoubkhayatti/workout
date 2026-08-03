@@ -16,6 +16,9 @@
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+/* Kill iOS double-tap-to-zoom on controls (fast stepper taps were zooming). */
+button, input, select, summary, label { touch-action: manipulation; }
+
 html, body { margin: 0; height: 100%; }
 
 body {

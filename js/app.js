@@ -2,6 +2,10 @@
 (function () {
   "use strict";
 
+  // Bump on every release, together with VERSION in sw.js — Settings shows it so a
+  // manual refresh is verifiable against the latest change.
+  const APP_VERSION = "v5 (2026-08-03) — stepper zoom fix";
+
   const DAYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
   const FREE_DB = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
 
@@ -363,9 +367,9 @@
       } catch {}
       location.reload();
     };
-    const vHint = el("div", { className: "hint", textContent: "" });
+    const vHint = el("div", { className: "hint", textContent: `Running ${APP_VERSION}` });
     if ("caches" in window) caches.keys()
-      .then((ks) => { const m = ks.map((k) => (k.match(/^shell-(v\d+)$/) || [])[1]).find(Boolean); vHint.textContent = m ? `Installed version: ${m}` : "Nothing cached yet."; })
+      .then((ks) => { const m = ks.map((k) => (k.match(/^shell-(v\d+)$/) || [])[1]).find(Boolean); if (m) vHint.textContent += ` · cache ${m}`; })
       .catch(() => {});
     up.append(force, vHint);
     view.append(up);
