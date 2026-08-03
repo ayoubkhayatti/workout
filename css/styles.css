@@ -187,8 +187,19 @@ button.btn + button.btn { margin-top: 10px; }
   padding: calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 16px);
   max-width: 720px; margin: 0 auto; overflow-y: auto;
 }
-.s-head { display: flex; align-items: center; justify-content: space-between; }
-.s-sub { font-size: 13px; color: var(--muted); }
+.s-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.s-sub { font-size: 13px; color: var(--muted); flex: 1; }
+.s-clock { font-size: 13px; color: var(--accent); font-variant-numeric: tabular-nums; }
+.s-sets { display: flex; gap: 6px; flex-wrap: wrap; }
+.s-setchip {
+  font-size: 13px; color: var(--muted); background: var(--surface-2);
+  border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px;
+  font-variant-numeric: tabular-nums;
+}
+.s-setchip.done { color: var(--good); border-color: var(--good); }
+.s-setchip.cur { color: var(--accent); border-color: var(--accent); }
+.s-settimer { text-align: center; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.s-skiprow { display: flex; justify-content: space-between; }
 .s-icon {
   background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
   border-radius: 999px; width: 40px; height: 40px; font-size: 16px; cursor: pointer;
