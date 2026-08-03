@@ -207,7 +207,6 @@ button.btn + button.btn { margin-top: 10px; }
 .s-timer .v { font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.15; }
 .s-timer.main { border-color: var(--accent-dim); }
 .s-timer.main .v { color: var(--accent); }
-.s-skiprow { display: flex; justify-content: space-between; }
 .s-icon {
   background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
   border-radius: 999px; width: 40px; height: 40px; font-size: 16px; cursor: pointer;
@@ -217,21 +216,27 @@ button.btn + button.btn { margin-top: 10px; }
 .session .media { flex-shrink: 0; aspect-ratio: 16/10; margin: 0; }
 .s-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .s-field label { display: block; font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 4px; }
-.s-stepper { display: grid; grid-template-columns: 52px 1fr 52px; gap: 6px; }
+.s-stepper { display: grid; grid-template-columns: 68px 1fr 68px; gap: 8px; }
 .s-stepper input {
   background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
-  border-radius: 10px; font-size: 22px; font-weight: 700; text-align: center; padding: 10px 4px; width: 100%;
+  border-radius: 12px; font-size: 26px; font-weight: 700; text-align: center; padding: 14px 4px; width: 100%;
+  min-height: 60px;
 }
 .s-step {
   background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
-  border-radius: 10px; font-size: 22px; cursor: pointer;
+  border-radius: 12px; font-size: 30px; font-weight: 700; cursor: pointer; min-height: 60px;
 }
 .s-done {
   background: var(--good); color: #04150e; border: 0; border-radius: 14px;
   padding: 20px; font-size: 20px; font-weight: 800; cursor: pointer; width: 100%;
   margin-top: auto;
 }
-.s-skip { background: none; border: 0; color: var(--muted); font-size: 14px; padding: 10px; cursor: pointer; }
+.s-skip {
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
+  border-radius: 14px; font-size: 17px; font-weight: 700; cursor: pointer;
+  min-height: 64px; width: 100%;
+}
+.s-skiprow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .cd {
   font-size: clamp(72px, 28vw, 140px); font-weight: 800; text-align: center;
   font-variant-numeric: tabular-nums; line-height: 1.1;
@@ -241,6 +246,7 @@ button.btn + button.btn { margin-top: 10px; }
 .s-nextup .k { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
 .s-nextup .v { font-size: 17px; font-weight: 600; }
 .s-restbtns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: auto; }
+.s-restbtns .btn { min-height: 72px; font-size: 17px; border-radius: 14px; }
 .s-restbtns .btn + .btn { margin-top: 0; }
 .s-finish { text-align: center; margin: auto 0; }
 .s-finish .big { font-size: 56px; }
