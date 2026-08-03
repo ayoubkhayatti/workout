@@ -4,7 +4,7 @@
 
   // Bump on every release, together with VERSION in sw.js — Settings shows it so a
   // manual refresh is verifiable against the latest change.
-  const APP_VERSION = "v13 (2026-08-03) — landscape work screen fits without scroll";
+  const APP_VERSION = "v14 (2026-08-03) — landscape: big rest gif, aligned tiles, no scroll";
 
   const DAYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
   const FREE_DB = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
