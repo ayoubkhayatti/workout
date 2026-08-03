@@ -280,13 +280,22 @@ button.btn + button.btn { margin-top: 10px; }
   .session.work .s-name { grid-column: 2; align-self: center; }
   .session.work .s-target { grid-column: 3; align-self: center; text-align: right; }
   .session.work .s-inputs { grid-column: 2; grid-template-columns: 1fr; gap: 6px; }
-  .session.work .s-timers { grid-column: 3; grid-template-columns: 1fr; gap: 6px; align-content: start; }
-  .session.work .s-timer {
-    min-height: 68px; display: flex; flex-direction: column; justify-content: center;
-    padding: 2px 10px; box-sizing: border-box;
+  /* Timer tiles rebuilt with stepper anatomy — 12px label above, 48px box
+     below, same margins — so their edges line up with the kg/reps inputs. */
+  .session.work .s-timers { grid-column: 3; display: block; }
+  .session.work .s-timer { display: block; background: none; border: 0; padding: 0; min-height: 0; text-align: center; }
+  .session.work .s-timer + .s-timer { margin-top: 6px; }
+  .session.work .s-timer .k {
+    display: block; font-size: 12px; line-height: 1.5; color: var(--muted);
+    letter-spacing: normal; text-transform: none; margin-bottom: 4px;
   }
+  .session.work .s-timer .v {
+    display: flex; align-items: center; justify-content: center; min-height: 48px;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px;
+    font-size: 24px; font-weight: 700;
+  }
+  .session.work .s-timer.main .v { color: var(--accent); border-color: var(--accent-dim); }
   .s-name { font-size: 20px; }
-  .s-timer .v { font-size: 26px; }
   .s-stepper { grid-template-columns: 56px 1fr 56px; }
   .s-stepper input, .s-step { min-height: 48px; font-size: 22px; }
   .s-done { min-height: 54px; padding: 8px; font-size: 18px; }
@@ -296,7 +305,7 @@ button.btn + button.btn { margin-top: 10px; }
      sits on the right above the buttons. Explicit height on media — the box
      only holds absolutely-positioned imgs, no height means it collapses. */
   .session.rest .media { grid-column: 1; grid-row: 2 / span 6; height: 100%; aspect-ratio: auto; min-height: 0; }
-  .session.rest .cd { grid-column: 2; align-self: center; font-size: clamp(44px, 13vh, 84px); line-height: 1; }
+  .session.rest .cd { grid-column: 2; align-self: center; font-size: clamp(64px, 22vh, 128px); line-height: 1; }
   .s-restbtns { gap: 8px; }
   .s-restbtns .btn { min-height: 60px; font-size: 17px; }
 }
