@@ -11,6 +11,7 @@
   };
   const pad = (n) => String(n).padStart(2, "0");
   const todayISO = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
+  const fmtT = (ms) => { const s = Math.floor(ms / 1000); return `${Math.floor(s / 60)}:${pad(s % 60)}`; };
 
   let S = null;        // active session state
   let wakeLock = null;
@@ -180,7 +181,10 @@
       snd.textContent = soundOn() ? "🔊" : "🔇";
       if (soundOn()) ensureAudio();
     };
-    return el("div", { className: "s-head" }, exit, el("span", { className: "s-sub", textContent: sub }), snd);
+    const clk = el("span", { className: "s-clock", textContent: fmtT(Date.now() - S.startedAt) });
+    const t = setInterval(() => { clk.textContent = fmtT(Date.now() - S.startedAt); }, 1000);
+    S.timers.push(t);
+    return el("div", { className: "s-head" }, exit, el("span", { className: "s-sub", textContent: sub }), clk, snd);
   }
 
   function stepper(label, input, step) {
@@ -211,6 +215,16 @@
     const target = [ex.reps != null ? `${ex.reps} reps` : null, ex.tempo ? `tempo ${ex.tempo}` : null]
       .filter(Boolean).join(" · ");
     if (target) S.root.append(el("div", { className: "s-target", textContent: target }));
+
+    // today's sets so far: done → logged values, current → "now", pending → dash
+    const chips = el("div", { className: "s-sets" });
+    entry.rec.sets.slice(0, entry.nSets).forEach((st, k) => {
+      chips.append(el("span", {
+        className: "s-setchip" + (st.done ? " done" : "") + (k === s ? " cur" : ""),
+        textContent: st.done ? `${st.weight || "?"}×${st.reps || "?"}` : k === s ? "now" : "–",
+      }));
+    });
+    S.root.append(chips);
     S.root.append(window.AppBridge.buildMedia(ex.media, S.timers));
 
     const wIn = el("input", { type: "number", inputMode: "decimal",
@@ -218,6 +232,13 @@
     const rIn = el("input", { type: "number", inputMode: "numeric",
       value: set.reps || (prevSet && prevSet.reps) || firstNum(ex.reps) });
     S.root.append(el("div", { className: "s-inputs" }, stepper("kg", wIn, 1), stepper("reps", rIn, 1)));
+
+    // count-up since this set's screen appeared — pacing for timed holds (plank etc.)
+    const setClk = el("div", { className: "s-settimer", textContent: "set 0:00" });
+    const setStart = Date.now();
+    const st = setInterval(() => { setClk.textContent = "set " + fmtT(Date.now() - setStart); }, 1000);
+    S.timers.push(st);
+    S.root.append(setClk);
 
     const done = el("button", { className: "s-done", textContent: "DONE ✓" });
     done.onclick = async () => {
@@ -232,7 +253,14 @@
     skip.onclick = () => {
       if (S.i + 1 >= S.order.length) { S.phase = "done"; render(); } else { S.i++; render(); }
     };
-    S.root.append(skip);
+    const nextEx = el("button", { className: "s-skip", textContent: "Next exercise →" });
+    nextEx.onclick = () => {
+      const cur = S.order[S.i].e;
+      let j = S.i + 1;
+      while (j < S.order.length && S.order[j].e === cur) j++;
+      if (j >= S.order.length) { S.phase = "done"; render(); } else { S.i = j; render(); }
+    };
+    S.root.append(el("div", { className: "s-skiprow" }, skip, nextEx));
   }
 
   function renderRest() {
