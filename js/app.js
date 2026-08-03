@@ -4,7 +4,7 @@
 
   // Bump on every release, together with VERSION in sw.js — Settings shows it so a
   // manual refresh is verifiable against the latest change.
-  const APP_VERSION = "v5 (2026-08-03) — stepper zoom fix";
+  const APP_VERSION = "v6 (2026-08-03) — stepper zoom fix 2";
 
   const DAYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
   const FREE_DB = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
