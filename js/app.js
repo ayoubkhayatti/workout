@@ -349,6 +349,27 @@
     c.append(url.wrap, reload, saveUrl, el("div", { className: "hint", textContent: "Edit data/workout.yml in the repo, push, then Reload." }));
     view.append(c);
 
+    // App update: wipe the shell/media caches and reload — everything refetches
+    // from the network. IndexedDB (logs, profile, weights) is untouched.
+    const up = el("div", { className: "card" });
+    up.append(el("h3", { textContent: "App update" }));
+    const force = el("button", { className: "btn ghost", textContent: "Force refresh app (keeps data)" });
+    force.onclick = async () => {
+      toast("Refreshing…");
+      try {
+        const reg = "serviceWorker" in navigator && await navigator.serviceWorker.getRegistration();
+        if (reg) await reg.update();
+        if ("caches" in window) for (const k of await caches.keys()) await caches.delete(k);
+      } catch {}
+      location.reload();
+    };
+    const vHint = el("div", { className: "hint", textContent: "" });
+    if ("caches" in window) caches.keys()
+      .then((ks) => { const m = ks.map((k) => (k.match(/^shell-(v\d+)$/) || [])[1]).find(Boolean); vHint.textContent = m ? `Installed version: ${m}` : "Nothing cached yet."; })
+      .catch(() => {});
+    up.append(force, vHint);
+    view.append(up);
+
     const b = el("div", { className: "card" });
     b.append(el("h3", { textContent: "Backup (your data stays on this phone)" }));
     const exp = el("button", { className: "btn ghost", textContent: "Export data (JSON)" });
