@@ -410,7 +410,15 @@
       return;
     }
     renderTab();
-    if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+    if ("serviceWorker" in navigator) {
+      // When an updated sw.js activates (skipWaiting + claim), reload once so the
+      // new shell shows this launch — iOS otherwise needs a full close + reopen.
+      const hadSW = !!navigator.serviceWorker.controller;
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (hadSW && !window._swReloaded) { window._swReloaded = true; location.reload(); }
+      });
+      navigator.serviceWorker.register("sw.js").then((r) => r.update()).catch(() => {});
+    }
   }
 
   // Shared with session.js (guided workout player).
