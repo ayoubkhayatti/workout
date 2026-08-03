@@ -184,10 +184,16 @@
   }
 
   function stepper(label, input, step) {
-    const dec = el("button", { className: "s-step", textContent: "−" });
-    const inc = el("button", { className: "s-step", textContent: "+" });
-    dec.onclick = () => { input.value = Math.max(0, (+input.value || 0) - step); };
-    inc.onclick = () => { input.value = (+input.value || 0) + step; };
+    // touchend + preventDefault: fire the step ourselves and stop iOS from ever
+    // seeing rapid taps as a double-tap zoom gesture (touch-action wasn't enough).
+    const tapBtn = (text, fn) => {
+      const b = el("button", { className: "s-step", textContent: text });
+      b.onclick = fn;
+      b.addEventListener("touchend", (e) => { e.preventDefault(); fn(); }, { passive: false });
+      return b;
+    };
+    const dec = tapBtn("−", () => { input.value = Math.max(0, (+input.value || 0) - step); });
+    const inc = tapBtn("+", () => { input.value = (+input.value || 0) + step; });
     return el("div", { className: "s-field" },
       el("label", { textContent: label }),
       el("div", { className: "s-stepper" }, dec, input, inc));
