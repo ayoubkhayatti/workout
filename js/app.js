@@ -4,7 +4,7 @@
 
   // Bump on every release, together with VERSION in sw.js — Settings shows it so a
   // manual refresh is verifiable against the latest change.
-  const APP_VERSION = "v16 (2026-08-03) — full-height landscape, giant rest counter";
+  const APP_VERSION = "v17 (2026-08-20) — do any workout on a rest day";
 
   const DAYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
   const FREE_DB = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
@@ -192,12 +192,29 @@
   window.addEventListener("pagehide", flushSaves);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushSaves(); });
 
+  // ---------- day override (do another day's workout today) ----------
+  // Stored with today's date so it expires automatically at midnight.
+  function getOverride() {
+    try {
+      const o = JSON.parse(localStorage.getItem("dayOverride"));
+      return o && o.date === todayISO() && DAYS.includes(o.day) ? o.day : null;
+    } catch { return null; }
+  }
+  function setOverride(day) {
+    if (day) localStorage.setItem("dayOverride", JSON.stringify({ date: todayISO(), day }));
+    else localStorage.removeItem("dayOverride");
+    renderTab();
+  }
+
   // ---------- day rendering ----------
   async function renderDay(dayName, view, editable = false) {
     const day = state.plan.week && state.plan.week[dayName];
     if (!day || day.rest) {
       view.append(el("div", { className: "card rest-card" }, el("div", { className: "big", textContent: "😴" }),
         el("div", { textContent: (day && day.name) || "Rest day" }), day && day.notes ? el("div", { className: "hint", textContent: day.notes }) : null));
+      // Life happens: on the Today tab a rest day still offers every workout in the
+      // plan, so a missed session can be done today (logs are keyed to today's date).
+      if (editable) view.append(workoutPicker());
       return;
     }
     view.append(el("h2", { className: "section-title", textContent: day.name || cap(dayName) }));
@@ -216,6 +233,29 @@
     }
   }
 
+  function workoutPicker() {
+    const card = el("div", { className: "card" });
+    card.append(el("h3", { textContent: "Train anyway" }),
+      el("div", { className: "hint", style: "margin-bottom:10px", textContent: "Pick a workout to do today instead." }));
+    for (const d of DAYS) {
+      const day = state.plan.week && state.plan.week[d];
+      if (!day || day.rest || !(day.exercises || []).length) continue;
+      const b = el("button", { className: "btn ghost", textContent: `${cap(d)} — ${day.name || "Workout"}` });
+      b.onclick = () => setOverride(d);
+      card.append(b);
+    }
+    return card;
+  }
+
+  async function renderToday(view) {
+    const ov = getOverride();
+    if (!ov) return renderDay(todayName(), view, true);
+    const back = el("button", { className: "btn ghost", style: "margin-top:10px", textContent: "← Back to today's plan" });
+    back.onclick = () => setOverride(null);
+    view.append(el("div", { className: "card hint" }, `Doing ${cap(ov)}'s workout today.`, back));
+    await renderDay(ov, view, true);
+  }
+
   // ---------- tabs ----------
   async function renderTab() {
     const token = ++renderToken;
@@ -223,7 +263,7 @@
     activeTimers.forEach(clearInterval); activeTimers = []; // stop old animation timers
     const frag = document.createDocumentFragment();
     try {
-      if (state.tab === "today") await renderDay(todayName(), frag, true);
+      if (state.tab === "today") await renderToday(frag);
       else if (state.tab === "week") await renderWeek(frag);
       else if (state.tab === "body") await renderBody(frag);
       else if (state.tab === "settings") await renderSettings(frag);
