@@ -109,9 +109,8 @@ week:
         weight: { per_hand: 7, unit: kg }
         sets: 3
         reps: "10-12"
-        rest: "20s"
-        superset: true
-        progression: "Superset with triceps ext (biceps/triceps don't compete). To 3×12, then +1–2 kg. Bench at ~45–60°, arms hang back for a stretch."
+        rest: "60s"
+        progression: "To 3×12, then +1–2 kg. Bench at ~45–60°, arms hang back for a stretch."
         media: { db: Alternate_Incline_Dumbbell_Curl }
 
       - name: Overhead DB Triceps Extension
@@ -193,9 +192,8 @@ week:
         weight: { per_hand: 4, unit: kg }
         sets: 3
         reps: "15"
-        rest: "20s"
-        superset: true
-        progression: "Superset with lateral raise (rear vs side delts). Light and strict. To 3×15 clean, then +1 kg."
+        rest: "60s"
+        progression: "Light and strict. To 3×15 clean, then +1 kg."
         notes: "Hinge forward, slight elbow bend, lift to the sides, pause at the top."
         media: { db: Reverse_Flyes }
 
@@ -215,9 +213,8 @@ week:
         weight: { per_hand: 7, unit: kg }
         sets: 3
         reps: "10-12"
-        rest: "20s"
-        superset: true
-        progression: "Superset with calf raise (triceps/calves don't compete). Lying on the bench. To 3×12, then +2 kg. Stop if elbows ache."
+        rest: "60s"
+        progression: "Lying on the bench. To 3×12, then +2 kg. Stop if elbows ache."
         notes: "Lower DBs beside the ears, elbows point up and stay still."
         media: { db: Lying_Dumbbell_Tricep_Extension }
 
@@ -319,9 +316,8 @@ week:
         weight: { per_hand: 8, unit: kg }
         sets: 3
         reps: "10-12"
-        rest: "20s"
-        superset: true
-        progression: "Superset with leg raise (arms/core don't compete). Neutral grip hits brachialis/forearm. To 3×12, then +2 kg."
+        rest: "60s"
+        progression: "Neutral grip hits brachialis/forearm. To 3×12, then +2 kg."
         media: { db: Alternate_Hammer_Curl }
 
       - name: Lying Leg Raise
