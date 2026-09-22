@@ -3,12 +3,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A tiny, offline-first **workout tracker PWA**. No accounts, no server, no tracking.
-It shows your weekly plan with an **animated demo** for each exercise, dumbbell
+It shows your weekly plan with an **animated demo** for each exercise, the
 weight (per hand or total), reps, and progression goals — and tracks your body
 weight, height, age and BMI. All personal data stays **on your device**.
 
-> ⚠️ The plan shipped in `data/workout.yml` is a **sample for demonstration only** —
-> not coaching or medical advice. Replace it with your own and consult a
+Ships with two plans — a home/dumbbell one and a commercial-gym one. Tap the
+title in the header to switch; your logs are one continuous history either way.
+
+> ⚠️ The plans shipped in `data/` are **samples for demonstration only** — not
+> coaching or medical advice. Replace them with your own and consult a
 > professional before starting any program.
 
 ## Use it on your phone (iPhone/Android)
@@ -24,9 +27,26 @@ or move to a new phone.
 ## Make it your own plan
 
 1. **Fork** this repo.
-2. Edit **`data/workout.yml`** — the whole plan is one readable file. The schema
-   and every field are documented in comments at the top of that file.
+2. Edit **`data/workout.yml`** (or `data/gym.yml`) — a whole plan is one readable
+   file. The schema and every field are documented in comments at the top.
 3. Commit & push. In the app: **Settings → Reload plan**.
+
+### Adding another plan
+
+Static hosting can't list a directory, so `data/plans.json` is the index the
+picker reads. Drop a new `.yml` in `data/` and add a line to it:
+
+```json
+[
+  { "file": "workout.yml", "name": "Home · dumbbells" },
+  { "file": "gym.yml",     "name": "Gym · machines" },
+  { "file": "travel.yml",  "name": "Hotel · bodyweight" }
+]
+```
+
+`name` is what the header picker shows. Logs are keyed by date + exercise name,
+never by plan, so switching plans never splits or hides your history — and the
+same exercise in two plans shares one "Last:" line.
 
 ### Exercise animations
 Each exercise takes an optional `media:` block:

@@ -4,12 +4,14 @@
 
   // Bump on every release, together with VERSION in sw.js — Settings shows it so a
   // manual refresh is verifiable against the latest change.
-  const APP_VERSION = "v17 (2026-08-20) — do any workout on a rest day";
+  const APP_VERSION = "v18 (2026-09-22) — multiple plans, pick one in the header";
 
   const DAYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
   const FREE_DB = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
 
-  const state = { plan: null, tab: "today", err: null };
+  const DEFAULT_PLAN = "data/workout.yml";
+
+  const state = { plan: null, plans: [], tab: "today", err: null };
 
   // Live media-animation timers, cleared on every re-render (else they leak).
   let activeTimers = [];
@@ -31,11 +33,46 @@
   const cap = (s) => s ? s[0].toUpperCase() + s.slice(1) : s;
 
   // ---------- plan loading ----------
+  // Static hosting can't list a directory, so data/plans.json is the index of the
+  // plans in data/ — add a .yml there, add a line here, and it shows in the picker.
+  async function loadPlanList() {
+    try {
+      const res = await fetch("data/plans.json", { cache: "no-store" });
+      if (res.ok) {
+        const list = (await res.json())
+          .filter((p) => p && p.file)
+          .map((p) => ({ url: "data/" + p.file, name: p.name || p.file }));
+        if (list.length) return list;
+      }
+    } catch {}
+    return [{ url: DEFAULT_PLAN, name: "Workout" }];
+  }
+  const planUrl = () => localStorage.getItem("planUrl") || state.plans[0].url;
+
   async function loadPlan() {
-    const url = localStorage.getItem("planUrl") || "data/workout.yml";
+    const url = planUrl();
     const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) throw new Error(`workout.yml: HTTP ${res.status}`);
+    if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
     return jsyaml.load(await res.text());
+  }
+
+  // The picker doubles as the app title. A planUrl outside the index (a custom URL
+  // typed in Settings) is kept as an extra option so it stays selectable.
+  function renderPicker() {
+    const sel = $("#planPicker");
+    const cur = planUrl();
+    const opts = state.plans.some((p) => p.url === cur)
+      ? state.plans
+      : state.plans.concat({ url: cur, name: "Custom plan" });
+    sel.innerHTML = "";
+    opts.forEach((p) => sel.append(el("option", { value: p.url, textContent: p.name, selected: p.url === cur })));
+    sel.onchange = () => switchPlan(sel.value);
+  }
+  // Switching plan swaps the whole week — logs are keyed by date + exercise name,
+  // never by plan, so history stays one continuous record across both plans.
+  function switchPlan(url) {
+    localStorage.setItem("planUrl", url);
+    reloadPlan().then(() => toast("Plan loaded"), (e) => { renderPicker(); toast("Plan failed: " + e.message); });
   }
 
   // ---------- media (exercise animation) ----------
@@ -385,12 +422,15 @@
   async function renderSettings(view) {
     const c = el("div", { className: "card" });
     c.append(el("h3", { textContent: "Workout plan" }));
-    const url = field("Plan YAML URL", "text", localStorage.getItem("planUrl") || "data/workout.yml");
-    const saveUrl = el("button", { className: "btn ghost", textContent: "Save URL & reload plan" });
-    saveUrl.onclick = async () => { localStorage.setItem("planUrl", url.input.value.trim()); await reloadPlan(); toast("Plan reloaded"); };
+    c.append(el("div", { className: "hint", style: "margin-bottom:10px",
+      textContent: "Pick the plan from the title at the top of the screen." }));
+    const url = field("Custom plan YAML URL (advanced)", "text", planUrl());
+    const saveUrl = el("button", { className: "btn ghost", textContent: "Save URL & load plan" });
+    saveUrl.onclick = () => switchPlan(url.input.value.trim());
     const reload = el("button", { className: "btn", textContent: "Reload plan" });
-    reload.onclick = async () => { await reloadPlan(); toast("Plan reloaded"); };
-    c.append(url.wrap, reload, saveUrl, el("div", { className: "hint", textContent: "Edit data/workout.yml in the repo, push, then Reload." }));
+    reload.onclick = () => reloadPlan().then(() => toast("Plan reloaded"), (e) => toast("Plan failed: " + e.message));
+    c.append(url.wrap, reload, saveUrl, el("div", { className: "hint",
+      textContent: "Edit the .yml files in data/ (and list them in data/plans.json), push, then Reload." }));
     view.append(c);
 
     // App update: wipe the shell/media caches and reload — everything refetches
@@ -440,7 +480,12 @@
     view.append(a);
   }
 
-  async function reloadPlan() { state.plan = await loadPlan(); renderTab(); }
+  async function reloadPlan() {
+    state.plan = await loadPlan();
+    document.title = state.plan && state.plan.title || "Workout";
+    renderPicker();
+    renderTab();
+  }
 
   // ---------- toast ----------
   let toastEl;
@@ -466,15 +511,15 @@
   async function boot() {
     initTabs();
     $("#dayBadge").textContent = cap(todayName());
+    state.plans = await loadPlanList();
+    renderPicker();
     try {
-      state.plan = await loadPlan();
-      if (state.plan && state.plan.title) { $("#title").textContent = state.plan.title; document.title = state.plan.title; }
+      await reloadPlan();
     } catch (e) {
       $("#view").innerHTML = "";
-      $("#view").append(el("div", { className: "card", textContent: "Could not load workout.yml — " + e.message }));
+      $("#view").append(el("div", { className: "card", textContent: "Could not load the plan — " + e.message }));
       return;
     }
-    renderTab();
     if ("serviceWorker" in navigator) {
       // When an updated sw.js activates (skipWaiting + claim), reload once so the
       // new shell shows this launch — iOS otherwise needs a full close + reopen.

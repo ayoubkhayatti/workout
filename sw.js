@@ -1,8 +1,8 @@
 /* sw.js — offline support.
    App shell: stale-while-revalidate (offline, but self-updates on next load).
-   workout.yml: network-first (see edits fast).
+   data/ (plans + their index): network-first (see edits fast).
    Exercise images: stale-while-revalidate (offline after first view). */
-const VERSION = "v17";
+const VERSION = "v18";
 const SHELL = "shell-" + VERSION;
 const MEDIA = "media-" + VERSION;
 const SHELL_FILES = [
@@ -14,6 +14,7 @@ const SHELL_FILES = [
   "js/session.js",
   "vendor/js-yaml.min.js",
   "manifest.webmanifest",
+  "data/plans.json",
   "icons/icon-192.png",
   "icons/icon-512.png",
   "icons/icon-180.png",
@@ -36,9 +37,9 @@ self.addEventListener("fetch", (e) => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
 
-  // Plan file: always try network first so edits show up; fall back to cache
-  // (ignoreSearch so a fallback still matches even if a query string is present).
-  if (url.pathname.endsWith(".yml")) {
+  // Plans (.yml, any host) and the plan index: network-first so edits show up; fall
+  // back to cache (ignoreSearch so it matches even with a query string present).
+  if (url.pathname.endsWith(".yml") || url.pathname.endsWith("/plans.json")) {
     e.respondWith(
       fetch(req).then((res) => { const cp = res.clone(); caches.open(SHELL).then((c) => c.put(req, cp)); return res; })
         .catch(() => caches.match(req, { ignoreSearch: true }))

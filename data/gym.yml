@@ -1,0 +1,354 @@
+# ============================================================================
+#  3-DAY FULL-BODY HYPERTROPHY  —  COMMERCIAL GYM (barbell, bench + rack,
+#  cable station, lat pulldown, seated row, leg press, leg curl/extension,
+#  pec deck, calf machine). Nothing exotic — every piece is in almost any gym.
+#
+#  Sibling of data/workout.yml (the home/dumbbell plan). SAME split, SAME days,
+#  SAME rep ranges, so you can pick whichever plan matches where you are today
+#  and the logs keep telling one story: Mon/Wed/Fri full body, ~10-12 hard sets
+#  per muscle per week, 8-15 reps at 1-3 reps in reserve, double progression.
+#
+#  Why the gym version differs from the dumbbell one:
+#   • Load ceiling is gone. Machines and barbells go far past 25 kg/hand, so
+#     the big movements (press, row, leg press, RDL) carry the growth here and
+#     you progress with weight, not only with reps.
+#   • Stability is free. Pulldown, seated row, leg press and pec deck let a
+#     novice push closer to failure safely without a spotter.
+#   • Pick machines over free weights when training alone and no one can spot.
+#
+#  STARTING LOADS are derived from the dumbbell plan's numbers using the usual
+#  conversions — barbell ≈ 1.2× the two-dumbbell total. Treat every number
+#  below as a first guess:
+#   • "total" on a barbell INCLUDES the 20 kg bar. 35 kg = bar + 7.5/side.
+#   • Machine stacks are NOT standardised — 40 kg on one leg press is another
+#     gym's 25. First session: find the load where the last 1-3 reps are hard
+#     but clean, write it in the log, and progress from there.
+#
+#  Progression: DOUBLE PROGRESSION. Hit the TOP of the rep range on every set,
+#  then add the smallest increment (2.5 kg barbell, one pin on a stack) and
+#  drop back to the bottom of the range. Deload ~every 8 weeks. Sleep 7-9 h,
+#  ~150-165 g protein/day, slight calorie surplus — the plan is only stimulus.
+# ============================================================================
+
+title: Full-Body 3× (Gym)
+
+week:
+  monday:
+    name: Full Body A
+    focus: 5 min bike/row warm-up → lift. Horizontal push + pull, leg press, machine shoulders.
+    exercises:
+      - name: Barbell Bench Press
+        equipment: barbell
+        muscles: [chest, triceps]
+        weight: { total: 35, unit: kg }
+        sets: 3
+        reps: "8-12"
+        rest: "90s"
+        tempo: "2-0-1"
+        progression: "To 3×12, then +2.5 kg. Training alone? Use the safety pins, or swap in the chest press machine."
+        notes: "Shoulder blades pinched, feet flat, bar to mid-chest, elbows ~45°."
+        media: { db: Barbell_Bench_Press_-_Medium_Grip }
+
+      - name: Wide-Grip Lat Pulldown
+        equipment: cable
+        muscles: [lats, back, biceps]
+        weight: { total: 35, unit: kg }
+        sets: 3
+        reps: "10-12"
+        rest: "75s"
+        progression: "To 3×12, then one pin up. Once you pull your bodyweight for 10, move to real pull-ups."
+        notes: "Chest up, pull the bar to the collarbone, elbows down and back — don't lean way back."
+        media: { db: Wide-Grip_Lat_Pulldown }
+
+      - name: Leg Press
+        equipment: machine
+        muscles: [quadriceps, glutes]
+        weight: { total: 60, unit: kg }
+        sets: 3
+        reps: "10-12"
+        rest: "90s"
+        progression: "Legs climb fastest of anything — expect +5-10 kg most weeks early on."
+        notes: "Feet shoulder-width mid-platform, knees track over toes, lower until hips start to tuck. Never lock the knees out hard."
+        media: { db: Leg_Press }
+
+      - name: Seated Leg Curl
+        equipment: machine
+        muscles: [hamstrings]
+        weight: { total: 25, unit: kg }
+        sets: 3
+        reps: "10-12"
+        rest: "75s"
+        progression: "To 3×12, then one pin. Seated beats lying for hamstring growth (longer muscle length)."
+        notes: "Pad just above the ankles, hips strapped down, squeeze at the bottom, 2 s back up."
+        media: { db: Seated_Leg_Curl }
+
+      - name: Machine Shoulder Press
+        equipment: machine
+        muscles: [shoulders, triceps]
+        weight: { total: 20, unit: kg }
+        sets: 3
+        reps: "8-12"
+        rest: "75s"
+        progression: "To 3×12, then one pin. Free-weight version comes back on Friday."
+        notes: "Seat height so the handles start at shoulder level, ribs down, no arching."
+        media: { db: Leverage_Shoulder_Press }
+
+      - name: Cable Lateral Raise
+        equipment: cable
+        muscles: [shoulders]
+        weight: { per_hand: 4, unit: kg }
+        sets: 3
+        reps: "12-15"
+        rest: "45s"
+        progression: "One arm at a time, low pulley behind you. Cables keep tension at the bottom where dumbbells lose it."
+        notes: "Lead with the elbow, no swinging or shrugging. Light and strict."
+        media: { db: Cable_Seated_Lateral_Raise }
+
+      - name: Cable Biceps Curl
+        equipment: cable
+        muscles: [biceps]
+        weight: { total: 15, unit: kg }
+        sets: 3
+        reps: "10-12"
+        rest: "60s"
+        progression: "To 3×12, then one pin. Straight or EZ bar on the low pulley."
+        notes: "Elbows pinned at your sides, no body English."
+        media: { db: Standing_Biceps_Cable_Curl }
+
+      - name: Rope Triceps Pushdown
+        equipment: cable
+        muscles: [triceps]
+        weight: { total: 15, unit: kg }
+        sets: 3
+        reps: "10-12"
+        rest: "60s"
+        progression: "To 3×12, then one pin."
+        notes: "Elbows glued to your ribs, spread the rope apart at the bottom."
+        media: { db: Triceps_Pushdown_-_Rope_Attachment }
+
+      - name: Plank
+        equipment: bodyweight
+        muscles: [abdominals, core]
+        weight: { bodyweight: true }
+        sets: 3
+        reps: "40s hold"
+        rest: "45s"
+        progression: "Add 10 s/week to 60-90 s, then elevate the feet or add a plate on your back."
+        media: { db: Plank }
+
+  tuesday: { rest: true, name: Rest, notes: "Walk / light mobility. Easy 10-min bike or row if you like." }
+
+  wednesday:
+    name: Full Body B
+    focus: 5 min warm-up → lift. Incline push + seated row, hip hinge, chest/rear-delt isolation.
+    exercises:
+      - name: Incline Barbell Bench Press
+        equipment: barbell
+        muscles: [chest, shoulders, triceps]
+        weight: { total: 30, unit: kg }
+        sets: 3
+        reps: "8-12"
+        rest: "75s"
+        tempo: "2-0-1"
+        progression: "To 3×12, then +2.5 kg. Bench at 30° — steeper turns it into a shoulder press."
+        notes: "Same cues as flat bench; bar touches just under the collarbone."
+        media: { db: Barbell_Incline_Bench_Press_-_Medium_Grip }
+
+      - name: Seated Cable Row
+        equipment: cable
+        muscles: [back, lats, biceps]
+        weight: { total: 35, unit: kg }
+        sets: 3
+        reps: "10-12"
+        rest: "75s"
+        progression: "To 3×12, then one pin. Back tolerates a lot of volume — you'll climb fast here."
+        notes: "Chest tall, pull to the navel, squeeze the shoulder blades, control the stretch forward. No rocking."
+        media: { db: Seated_Cable_Rows }
+
+      - name: Barbell Romanian Deadlift
+        equipment: barbell
+        muscles: [hamstrings, glutes, back]
+        weight: { total: 40, unit: kg }
+        sets: 3
+        reps: "10-12"
+        rest: "90s"
+        tempo: "3-0-1"
+        progression: "To 3×12, then +5 kg. The single best hamstring/glute builder in the gym."
+        notes: "Soft knees, hinge the hips back, bar grazes the thighs, neutral spine. Stop when the hamstrings stop stretching — not when the back rounds."
+        media: { db: Romanian_Deadlift }
+
+      - name: Leg Extension
+        equipment: machine
+        muscles: [quadriceps]
+        weight: { total: 25, unit: kg }
+        sets: 3
+        reps: "12-15"
+        rest: "60s"
+        progression: "To 3×15, then one pin. Pure quad work after the hinge."
+        notes: "Pause 1 s at the top, 2-3 s lowering. Knee pain = shorten the range, don't grind."
+        media: { db: Leg_Extensions }
+
+      - name: Pec Deck
+        equipment: machine
+        muscles: [chest]
+        weight: { total: 25, unit: kg }
+        sets: 3
+        reps: "12-15"
+        rest: "60s"
+        tempo: "3-0-1"
+        progression: "Stretch-focused, never heavy — protect the shoulders. To 3×15, then one pin."
+        notes: "Seat set so the handles are at chest height; open wide for the stretch, hug back together."
+        media: { db: Butterfly }
+
+      - name: Reverse Pec Deck
+        equipment: machine
+        muscles: [rear delts, back]
+        weight: { total: 20, unit: kg }
+        sets: 3
+        reps: "15"
+        rest: "60s"
+        progression: "Light and strict. To 3×15 clean, then one pin."
+        notes: "Chest on the pad, slight elbow bend, open to the sides and pause."
+        media: { db: Reverse_Machine_Flyes }
+
+      - name: Face Pull
+        equipment: cable
+        muscles: [rear delts, traps]
+        weight: { total: 15, unit: kg }
+        sets: 3
+        reps: "15"
+        rest: "45s"
+        progression: "Shoulder insurance against all the pressing. Stay light — reps, never load."
+        notes: "Rope at face height, pull to the forehead, hands split apart, elbows high."
+        media: { db: Face_Pull }
+
+      - name: Seated Calf Raise
+        equipment: machine
+        muscles: [calves]
+        weight: { total: 40, unit: kg }
+        sets: 3
+        reps: "12-20"
+        rest: "45s"
+        tempo: "1-1-1"
+        progression: "To 3×20, then one pin."
+        notes: "Full stretch at the bottom, pause 1 s at the top. No bouncing."
+        media: { db: Seated_Calf_Raise }
+
+      - name: Cable Crunch
+        equipment: cable
+        muscles: [abdominals, core]
+        weight: { total: 20, unit: kg }
+        sets: 3
+        reps: "12-15"
+        rest: "45s"
+        progression: "Abs are a muscle — load them. To 3×15, then one pin."
+        notes: "Kneel facing the stack, rope by your ears, curl the ribs to the hips. Hips stay still — this is not a hinge."
+        media: { db: Cable_Crunch }
+
+  thursday: { rest: true, name: Rest, notes: "Full rest or easy 15-20 min cardio (zone 2)." }
+
+  friday:
+    name: Full Body C
+    focus: 5 min warm-up → lift. Machine chest, close-grip pulldown, barbell squat + single-leg.
+    exercises:
+      - name: Machine Chest Press
+        equipment: machine
+        muscles: [chest, triceps]
+        weight: { total: 30, unit: kg }
+        sets: 3
+        reps: "10-12"
+        rest: "75s"
+        progression: "Third weekly chest hit, no spotter needed — push this one close to failure."
+        notes: "Handles at mid-chest height, full stretch back, don't lock out hard."
+        media: { db: Machine_Bench_Press }
+
+      - name: Close-Grip Lat Pulldown
+        equipment: cable
+        muscles: [lats, biceps]
+        weight: { total: 35, unit: kg }
+        sets: 3
+        reps: "10-12"
+        rest: "75s"
+        progression: "Neutral V-handle. Match or beat Monday's pulldown reps, then one pin."
+        notes: "Pull the elbows down to the ribs, lean back only ~10°."
+        media: { db: Close-Grip_Front_Lat_Pulldown }
+
+      - name: Barbell Back Squat
+        equipment: barbell
+        muscles: [quadriceps, glutes, hamstrings]
+        weight: { total: 30, unit: kg }
+        sets: 3
+        reps: "8-10"
+        rest: "120s"
+        progression: "Start with the EMPTY bar and own the technique — add 2.5-5 kg/week from there. Legs climb fast."
+        notes: "SET THE SAFETY PINS just below your bottom position. Bar on the rear delts, brace, sit between the heels, knees out, chest up."
+        media: { db: Barbell_Squat }
+
+      - name: Lying Leg Curl
+        equipment: machine
+        muscles: [hamstrings]
+        weight: { total: 25, unit: kg }
+        sets: 3
+        reps: "10-12"
+        rest: "75s"
+        progression: "Second weekly curl variation — beat Monday's reps, then one pin."
+        notes: "Hips pressed into the pad, no arching, 2-3 s lowering."
+        media: { db: Lying_Leg_Curls }
+
+      - name: Barbell Shoulder Press
+        equipment: barbell
+        muscles: [shoulders, triceps]
+        weight: { total: 20, unit: kg }
+        sets: 3
+        reps: "8-12"
+        rest: "75s"
+        progression: "Empty bar is a real starting weight here. To 3×12, then +2.5 kg."
+        notes: "Standing or seated. Ribs down, squeeze the glutes, press the head 'through' at the top."
+        media: { db: Barbell_Shoulder_Press }
+
+      - name: Dumbbell Lateral Raise
+        equipment: dumbbell
+        muscles: [shoulders]
+        weight: { per_hand: 4, unit: kg }
+        sets: 3
+        reps: "12-15"
+        rest: "45s"
+        progression: "Second weekly side-delt hit — match or beat Monday's cable reps."
+        notes: "Strict, tiny forward lean, lead with the elbows. Half-reps at the end are fine."
+        media: { db: Side_Lateral_Raise }
+
+      - name: Rope Hammer Curl
+        equipment: cable
+        muscles: [biceps, forearms]
+        weight: { total: 15, unit: kg }
+        sets: 3
+        reps: "10-12"
+        rest: "60s"
+        progression: "Neutral grip hits brachialis/forearm. To 3×12, then one pin."
+        notes: "Elbows at your sides, thumbs up, no swinging."
+        media: { db: Cable_Hammer_Curls_-_Rope_Attachment }
+
+      - name: Bench Dips
+        equipment: bodyweight
+        muscles: [triceps]
+        weight: { bodyweight: true }
+        sets: 3
+        reps: "10-15"
+        rest: "60s"
+        progression: "To 3×15, then put a plate on your lap. Ready for parallel-bar dips? Move up."
+        notes: "Hands on the bench behind you, elbows straight back, stop if the shoulders pinch."
+        media: { db: Bench_Dips }
+
+      - name: Hanging Leg Raise
+        equipment: bodyweight
+        muscles: [abdominals, core]
+        weight: { bodyweight: true }
+        sets: 3
+        reps: "8-12"
+        rest: "60s"
+        progression: "Knees tucked first, straight legs later. Can't hang yet? Use the captain's chair or lie on a bench."
+        notes: "Curl the pelvis up at the top, lower slowly, no swinging."
+        media: { db: Hanging_Leg_Raise }
+
+  saturday: { rest: true, name: Rest, notes: "Optional 20-30 min steady cardio or a walk." }
+  sunday: { rest: true, name: Rest, notes: "Full rest. Review last week's logs and set next week's targets." }

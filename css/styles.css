@@ -41,6 +41,15 @@ body {
   border-bottom: 1px solid var(--line);
 }
 .topbar h1 { font-size: 20px; margin: 0; font-weight: 700; }
+/* Plan picker doubles as the title — tap the plan name to switch plans. */
+.plan-picker {
+  appearance: none; -webkit-appearance: none;
+  border: 0; margin: 0; padding: 0 20px 0 0;
+  background: transparent url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%2393a1b0' stroke-width='2'><path d='M1 1l5 5 5-5'/></svg>") no-repeat right center/11px;
+  color: var(--text); font-family: inherit; font-size: 20px; font-weight: 700;
+  min-width: 0; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
+}
+.plan-picker option { background: var(--surface); color: var(--text); font-weight: 400; }
 .badge {
   font-size: 13px; color: var(--accent);
   background: var(--accent-dim); border: 1px solid var(--line);
