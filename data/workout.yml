@@ -116,13 +116,13 @@ week:
       - name: Overhead DB Triceps Extension
         equipment: dumbbell
         muscles: [triceps]
-        weight: { per_hand: 8, unit: kg }
+        weight: { total: 8, unit: kg }
         sets: 3
         reps: "10-12"
         rest: "60s"
         progression: "Two hands on one DB. To 3×12, then +2 kg."
         notes: "Elbows tucked & high, deep stretch behind the head."
-        media: { db: Dumbbell_One-Arm_Triceps_Extension }
+        media: { db: Seated_Triceps_Press }
 
       - name: Plank
         equipment: bodyweight
