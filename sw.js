@@ -2,7 +2,7 @@
    App shell: stale-while-revalidate (offline, but self-updates on next load).
    data/ (plans + their index): network-first (see edits fast).
    Exercise images: stale-while-revalidate (offline after first view). */
-const VERSION = "v18";
+const VERSION = "v19";
 const SHELL = "shell-" + VERSION;
 const MEDIA = "media-" + VERSION;
 const SHELL_FILES = [

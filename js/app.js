@@ -4,7 +4,7 @@
 
   // Bump on every release, together with VERSION in sw.js — Settings shows it so a
   // manual refresh is verifiable against the latest change.
-  const APP_VERSION = "v18 (2026-09-22) — multiple plans, pick one in the header";
+  const APP_VERSION = "v19 (2026-09-22) — multiple plans, pick one in the header";
 
   const DAYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
   const FREE_DB = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
@@ -47,7 +47,7 @@
     } catch {}
     return [{ url: DEFAULT_PLAN, name: "Workout" }];
   }
-  const planUrl = () => localStorage.getItem("planUrl") || state.plans[0].url;
+  const planUrl = () => localStorage.getItem("planUrl") || (state.plans[0] || {}).url || DEFAULT_PLAN;
 
   async function loadPlan() {
     const url = planUrl();
@@ -60,6 +60,7 @@
   // typed in Settings) is kept as an extra option so it stays selectable.
   function renderPicker() {
     const sel = $("#planPicker");
+    if (!sel) return;   // a stale cached index.html has no picker — the plan still loads
     const cur = planUrl();
     const opts = state.plans.some((p) => p.url === cur)
       ? state.plans
@@ -300,7 +301,9 @@
     activeTimers.forEach(clearInterval); activeTimers = []; // stop old animation timers
     const frag = document.createDocumentFragment();
     try {
-      if (state.tab === "today") await renderToday(frag);
+      const needsPlan = state.tab === "today" || state.tab === "week";
+      if (needsPlan && !state.plan) frag.append(noPlanCard());
+      else if (state.tab === "today") await renderToday(frag);
       else if (state.tab === "week") await renderWeek(frag);
       else if (state.tab === "body") await renderBody(frag);
       else if (state.tab === "settings") await renderSettings(frag);
@@ -311,6 +314,17 @@
     const view = $("#view");
     view.innerHTML = "";
     view.append(frag);
+  }
+
+  // Shown when the plan failed to load: Body/Settings still work, so offer the way back.
+  function noPlanCard() {
+    const retry = el("button", { className: "btn", textContent: "Reload plan" });
+    retry.onclick = () => reloadPlan().then(() => toast("Plan loaded"), (e) => toast("Plan failed: " + e.message));
+    return el("div", { className: "card" },
+      el("h3", { textContent: "No plan loaded" }),
+      el("div", { className: "hint", style: "margin-bottom:10px",
+        textContent: "Couldn't read the plan file. If reloading doesn't help, use Settings → Force refresh app." }),
+      retry);
   }
 
   async function renderWeek(view) {
@@ -511,14 +525,13 @@
   async function boot() {
     initTabs();
     $("#dayBadge").textContent = cap(todayName());
-    state.plans = await loadPlanList();
-    renderPicker();
     try {
+      state.plans = await loadPlanList();
+      renderPicker();
       await reloadPlan();
     } catch (e) {
       $("#view").innerHTML = "";
       $("#view").append(el("div", { className: "card", textContent: "Could not load the plan — " + e.message }));
-      return;
     }
     if ("serviceWorker" in navigator) {
       // When an updated sw.js activates (skipWaiting + claim), reload once so the
