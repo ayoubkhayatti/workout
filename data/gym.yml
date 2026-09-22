@@ -15,6 +15,9 @@
 #   • Stability is free. Pulldown, seated row, leg press and pec deck let a
 #     novice push closer to failure safely without a spotter.
 #   • Pick machines over free weights when training alone and no one can spot.
+#   • NOTHING here needs both columns of the cable crossover at once — that rig
+#     is the most contested spot in any gym. Every cable move below uses a
+#     single column, so you can work around whoever is on the other side.
 #
 #  STARTING LOADS are derived from the dumbbell plan's numbers using the usual
 #  conversions — barbell ≈ 1.2× the two-dumbbell total. Treat every number
@@ -93,16 +96,16 @@ week:
         notes: "Seat height so the handles start at shoulder level, ribs down, no arching."
         media: { db: Leverage_Shoulder_Press }
 
-      - name: Cable Lateral Raise
-        equipment: cable
+      - name: DB Lateral Raise
+        equipment: dumbbell
         muscles: [shoulders]
         weight: { per_hand: 4, unit: kg }
         sets: 3
         reps: "12-15"
         rest: "45s"
-        progression: "One arm at a time, low pulley behind you. Cables keep tension at the bottom where dumbbells lose it."
-        notes: "Lead with the elbow, no swinging or shrugging. Light and strict."
-        media: { db: Cable_Seated_Lateral_Raise }
+        progression: "Stay strict — to 3×15, then +1-2 kg. Half-reps at the end are fine."
+        notes: "Lead with the elbows, tiny forward lean, no swinging or shrugging. Dumbbells here on purpose: the seated cable version needs BOTH columns of the crossover and that station is always taken."
+        media: { db: Side_Lateral_Raise }
 
       - name: Cable Biceps Curl
         equipment: cable
@@ -306,15 +309,15 @@ week:
         notes: "Standing or seated. Ribs down, squeeze the glutes, press the head 'through' at the top."
         media: { db: Barbell_Shoulder_Press }
 
-      - name: Dumbbell Lateral Raise
+      - name: DB Lateral Raise
         equipment: dumbbell
         muscles: [shoulders]
         weight: { per_hand: 4, unit: kg }
         sets: 3
         reps: "12-15"
         rest: "45s"
-        progression: "Second weekly side-delt hit — match or beat Monday's cable reps."
-        notes: "Strict, tiny forward lean, lead with the elbows. Half-reps at the end are fine."
+        progression: "Second weekly side-delt hit — match or beat Monday's reps."
+        notes: "Strict, tiny forward lean, lead with the elbows. Same name as the home plan on purpose — one continuous history for this lift."
         media: { db: Side_Lateral_Raise }
 
       - name: Rope Hammer Curl
