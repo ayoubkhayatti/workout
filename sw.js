@@ -2,7 +2,7 @@
    App shell: stale-while-revalidate (offline, but self-updates on next load).
    data/ (plans + their index): network-first (see edits fast), precached on install.
    Exercise images: stale-while-revalidate in a version-independent cache. */
-const VERSION = "v20";
+const VERSION = "v21";
 const SHELL = "shell-" + VERSION;
 // Unversioned on purpose: images are immutable and cost megabytes to refetch, so a
 // release must not throw them away. Keep this name in step with MEDIA_CACHE in app.js.

@@ -3,11 +3,15 @@
   "use strict";
 
   const DB_NAME = "workoutApp";
-  const DB_VERSION = 1;
+  const DB_VERSION = 2;
   const STORES = {
     profile: { keyPath: "id" },      // single record id:"me"
     bodyweight: { keyPath: "date" }, // date: "YYYY-MM-DD", kg: number
     logs: { keyPath: "key" },        // key: "YYYY-MM-DD|idx|Exercise", sets:[...]
+    // Plans imported on this device. They live here rather than in the repo so a
+    // plan tuned to one person's body and loads never has to be published to use
+    // the app. Included in export/import like everything else.
+    plans: { keyPath: "id" },        // { id, name, yaml, updated }
   };
 
   let _db = null;

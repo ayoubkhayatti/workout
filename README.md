@@ -20,14 +20,15 @@ title in the header to switch; your logs are one continuous history either way.
 2. **iPhone:** Share → **Add to Home Screen**. **Android:** menu → **Install app**.
 3. Launch from the home-screen icon — it runs full-screen and works offline.
 
-Your profile, weight log and workout logs live only in that browser
-(IndexedDB). Use **Settings → Export data** to back them up; **Import** to restore
-or move to a new phone.
+Your profile, weight log, workout logs and any plan you imported live only in
+that browser (IndexedDB) — nothing is ever uploaded. Use **Settings → Export
+data** to back them up; **Import** to restore or move to a new phone.
 
 ## Offline
 
 Everything works with no connection: the app itself, every plan listed in
-`data/plans.json`, the exercise demos, the guided session and all logging.
+`data/plans.json`, any plan you imported, the exercise demos, the guided session
+and all logging.
 
 On the first launch the app quietly downloads every exercise image of every
 plan (a few MB, once) so a demo is there before you ever scroll to it. Later
@@ -41,15 +42,28 @@ want available offline.
 
 ## Make it your own plan
 
-1. **Fork** this repo.
-2. Edit **`data/workout.yml`** (or `data/gym.yml`) — a whole plan is one readable
-   file. The schema and every field are documented in comments at the top.
-3. Commit & push. In the app: **Settings → Reload plan**.
+A plan is personal data: it carries your working loads, and often your body and
+level in its notes. So the app keeps your plan on your device rather than in the
+repo.
 
-### Adding another plan
+1. Copy `data/workout.yml` (or `data/gym.yml`) and edit it — a whole plan is one
+   readable file, and the schema and every field are documented in comments at
+   the top.
+2. In the app: **Settings → My plans → Import plan (.yml)**.
 
-Static hosting can't list a directory, so `data/plans.json` is the index the
-picker reads. Drop a new `.yml` in `data/` and add a line to it:
+It is stored in IndexedDB, appears in the header picker under **My plans**, works
+offline like everything else, and is included in **Settings → Export data**. It is
+never uploaded anywhere. **Export** next to it writes the `.yml` back out;
+**delete** removes it from the device and leaves your logs alone.
+
+> The plans in `data/` are public samples. Don't put your own numbers in them and
+> push — that publishes them. Import instead.
+
+### Adding another sample plan
+
+This is for the plans shipped *with* the app, not your own. Static hosting can't
+list a directory, so `data/plans.json` is the index the picker reads. Drop a new
+`.yml` in `data/` and add a line to it:
 
 ```json
 [
@@ -61,7 +75,8 @@ picker reads. Drop a new `.yml` in `data/` and add a line to it:
 
 `name` is what the header picker shows. Logs are keyed by date + exercise name,
 never by plan, so switching plans never splits or hides your history — and the
-same exercise in two plans shares one "Last:" line.
+same exercise in two plans shares one "Last:" line. That holds for imported plans
+too.
 
 ### Exercise animations
 Each exercise takes an optional `media:` block:

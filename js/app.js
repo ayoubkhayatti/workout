@@ -4,7 +4,7 @@
 
   // Bump on every release, together with VERSION in sw.js — Settings shows it so a
   // manual refresh is verifiable against the latest change.
-  const APP_VERSION = "v20 (2026-09-24) — full offline: plans + exercise images cached";
+  const APP_VERSION = "v21 (2026-09-24) — import your own plan; it stays on this device";
 
   const DAYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
   const FREE_DB = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
@@ -12,6 +12,11 @@
   const MEDIA_CACHE = "media";
 
   const DEFAULT_PLAN = "data/workout.yml";
+  // A plan reference is either a URL (a sample shipped in data/) or "local:<id>",
+  // a plan imported on this device and kept in IndexedDB. Keeping the personal
+  // ones out of the repo is the whole point: a plan carries your working loads.
+  const LOCAL = "local:";
+  const isLocal = (ref) => String(ref).startsWith(LOCAL);
 
   const state = { plan: null, plans: [], tab: "today", err: null };
 
@@ -37,25 +42,51 @@
   // ---------- plan loading ----------
   // Static hosting can't list a directory, so data/plans.json is the index of the
   // plans in data/ — add a .yml there, add a line here, and it shows in the picker.
-  async function loadPlanList() {
+  async function shippedPlans() {
     try {
       const res = await fetch("data/plans.json", { cache: "no-store" });
       if (res.ok) {
         const list = (await res.json())
           .filter((p) => p && p.file)
-          .map((p) => ({ url: "data/" + p.file, name: p.name || p.file }));
+          .map((p) => ({ ref: "data/" + p.file, name: p.name || p.file, local: false }));
         if (list.length) return list;
       }
     } catch {}
-    return [{ url: DEFAULT_PLAN, name: "Workout" }];
+    return [{ ref: DEFAULT_PLAN, name: "Workout", local: false }];
   }
-  const planUrl = () => localStorage.getItem("planUrl") || (state.plans[0] || {}).url || DEFAULT_PLAN;
+  const localPlans = () => DB.getAll("plans").then(
+    (rows) => rows.sort((a, b) => String(a.name).localeCompare(b.name))
+      .map((r) => ({ ref: LOCAL + r.id, name: r.name, local: true })),
+    () => []);
 
-  async function loadPlan() {
-    const url = planUrl();
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
-    return jsyaml.load(await res.text());
+  async function loadPlanList() {
+    const [shipped, mine] = await Promise.all([shippedPlans(), localPlans()]);
+    return shipped.concat(mine);
+  }
+  const planRef = () => localStorage.getItem("planUrl") || (state.plans[0] || {}).ref || DEFAULT_PLAN;
+
+  // One reader for both sources, so nothing above here cares where a plan came from.
+  async function readPlanText(ref) {
+    if (isLocal(ref)) {
+      const rec = await DB.get("plans", ref.slice(LOCAL.length));
+      if (!rec) throw new Error("that plan is no longer on this device");
+      return rec.yaml;
+    }
+    const res = await fetch(ref, { cache: "no-store" });
+    if (!res.ok) throw new Error(`${ref}: HTTP ${res.status}`);
+    return res.text();
+  }
+
+  const loadPlan = async () => jsyaml.load(await readPlanText(planRef()));
+
+  // A plan must at least have a week of days, or the rest of the app renders nothing
+  // and the failure only shows up later as an empty screen.
+  function validatePlan(obj) {
+    if (!obj || typeof obj !== "object") throw new Error("not a YAML mapping");
+    if (!obj.week || typeof obj.week !== "object") throw new Error("no `week:` section");
+    const days = Object.keys(obj.week).filter((d) => DAYS.includes(d));
+    if (!days.length) throw new Error("`week:` has no weekday entries");
+    return obj;
   }
 
   // The picker doubles as the app title. A planUrl outside the index (a custom URL
@@ -63,19 +94,48 @@
   function renderPicker() {
     const sel = $("#planPicker");
     if (!sel) return;   // a stale cached index.html has no picker — the plan still loads
-    const cur = planUrl();
-    const opts = state.plans.some((p) => p.url === cur)
+    const cur = planRef();
+    const opts = state.plans.some((p) => p.ref === cur)
       ? state.plans
-      : state.plans.concat({ url: cur, name: "Custom plan" });
+      : state.plans.concat({ ref: cur, name: "Custom plan", local: isLocal(cur) });
     sel.innerHTML = "";
-    opts.forEach((p) => sel.append(el("option", { value: p.url, textContent: p.name, selected: p.url === cur })));
+    const mine = opts.filter((p) => p.local), samples = opts.filter((p) => !p.local);
+    const option = (p) => el("option", { value: p.ref, textContent: p.name, selected: p.ref === cur });
+    // Only split into groups once there is something to split — one flat list reads
+    // better while the samples are all there is.
+    if (mine.length && samples.length) {
+      const g1 = el("optgroup", { label: "My plans" }), g2 = el("optgroup", { label: "Samples" });
+      mine.forEach((p) => g1.append(option(p)));
+      samples.forEach((p) => g2.append(option(p)));
+      sel.append(g1, g2);
+    } else {
+      opts.forEach((p) => sel.append(option(p)));
+    }
     sel.onchange = () => switchPlan(sel.value);
   }
   // Switching plan swaps the whole week — logs are keyed by date + exercise name,
   // never by plan, so history stays one continuous record across both plans.
-  function switchPlan(url) {
-    localStorage.setItem("planUrl", url);
+  function switchPlan(ref) {
+    localStorage.setItem("planUrl", ref);
     reloadPlan().then(() => toast("Plan loaded"), (e) => { renderPicker(); toast("Plan failed: " + e.message); });
+  }
+
+  // ---------- my plans (imported, device-only) ----------
+  async function importPlanFile(file) {
+    const text = await file.text();
+    const plan = validatePlan(jsyaml.load(text));
+    const id = String(Date.now());
+    const name = (plan.title || file.name.replace(/\.(ya?ml)$/i, "")).slice(0, 60);
+    await DB.put("plans", { id, name, yaml: text, updated: new Date().toISOString() });
+    state.plans = await loadPlanList();
+    return { ref: LOCAL + id, name };
+  }
+
+  async function deletePlan(ref) {
+    await DB.del("plans", ref.slice(LOCAL.length));
+    state.plans = await loadPlanList();
+    // Don't strand the app on a plan that no longer exists.
+    if (planRef() === ref) localStorage.removeItem("planUrl");
   }
 
   // ---------- media (exercise animation) ----------
@@ -161,8 +221,7 @@
     const urls = new Set();
     for (const p of state.plans) {
       try {
-        const res = await fetch(p.url);
-        if (res.ok) planMedia(jsyaml.load(await res.text())).forEach((u) => urls.add(u));
+        planMedia(jsyaml.load(await readPlanText(p.ref))).forEach((u) => urls.add(u));
       } catch {}
     }
     return [...urls];
@@ -528,17 +587,65 @@
   // ---------- settings ----------
   async function renderSettings(view) {
     const c = el("div", { className: "card" });
-    c.append(el("h3", { textContent: "Workout plan" }));
+    c.append(el("h3", { textContent: "My plans" }));
     c.append(el("div", { className: "hint", style: "margin-bottom:10px",
-      textContent: "Pick the plan from the title at the top of the screen." }));
-    const url = field("Custom plan YAML URL (advanced)", "text", planUrl());
+      textContent: "A plan carries your working loads, so import yours here instead of "
+        + "publishing it. It stays on this device, shows in the picker at the top, and "
+        + "rides along in Export data." }));
+
+    const mine = state.plans.filter((p) => p.local);
+    if (mine.length) {
+      const ul = el("ul", { className: "wlist" });
+      mine.forEach((p) => {
+        const save = el("button", { textContent: "export" });
+        save.onclick = async () => {
+          const text = await readPlanText(p.ref);
+          const a = el("a", { href: URL.createObjectURL(new Blob([text], { type: "text/yaml" })),
+            download: p.name.replace(/[^\w.-]+/g, "-") + ".yml" });
+          a.click();
+        };
+        const del = el("button", { textContent: "delete" });
+        del.onclick = async () => {
+          if (!confirm(`Delete the plan "${p.name}" from this device? Your logs are not affected.`)) return;
+          await deletePlan(p.ref);
+          renderPicker();
+          reloadPlan().catch(() => renderTab());
+          toast("Plan deleted");
+        };
+        ul.append(el("li", {}, el("span", { className: "d", textContent: p.name }), save, del));
+      });
+      c.append(ul);
+    }
+
+    const planFile = el("input", { type: "file", accept: ".yml,.yaml,text/yaml,text/plain", style: "display:none" });
+    planFile.onchange = async () => {
+      const f = planFile.files[0];
+      planFile.value = "";                       // let the same file be picked again after a fix
+      if (!f) return;
+      try {
+        const added = await importPlanFile(f);
+        switchPlan(added.ref);
+        warmMedia();
+        toast(`Imported "${added.name}"`);
+      } catch (e) { toast("Import failed: " + e.message); }
+    };
+    const impPlan = el("button", { className: "btn", textContent: "Import plan (.yml)" });
+    impPlan.onclick = () => planFile.click();
+    c.append(impPlan, planFile);
+    view.append(c);
+
+    const sp = el("div", { className: "card" });
+    sp.append(el("h3", { textContent: "Sample plans" }));
+    sp.append(el("div", { className: "hint", style: "margin-bottom:10px",
+      textContent: "The plans shipped with the app. Edit the .yml files in data/ (and list "
+        + "them in data/plans.json), push, then Reload." }));
+    const url = field("Custom plan YAML URL (advanced)", "text", isLocal(planRef()) ? "" : planRef());
     const saveUrl = el("button", { className: "btn ghost", textContent: "Save URL & load plan" });
     saveUrl.onclick = () => switchPlan(url.input.value.trim());
     const reload = el("button", { className: "btn", textContent: "Reload plan" });
     reload.onclick = () => reloadPlan().then(() => toast("Plan reloaded"), (e) => toast("Plan failed: " + e.message));
-    c.append(url.wrap, reload, saveUrl, el("div", { className: "hint",
-      textContent: "Edit the .yml files in data/ (and list them in data/plans.json), push, then Reload." }));
-    view.append(c);
+    sp.append(url.wrap, reload, saveUrl);
+    view.append(sp);
 
     // App update: wipe the shell cache and reload — the code refetches from the
     // network. IndexedDB (logs, profile, weights) and the downloaded exercise images
