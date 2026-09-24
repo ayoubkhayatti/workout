@@ -226,16 +226,16 @@ week:
         notes: "Seat set so the handles are at chest height; open wide for the stretch, hug back together. No pec deck? DB flyes on a flat bench, same cues."
         media: { db: Butterfly }
 
-      - name: Chest-Supported Reverse Flye
-        equipment: dumbbell
+      - name: Single-Arm Cable Rear Delt Fly
+        equipment: cable
         muscles: [rear delts, back]
-        weight: { per_hand: 4, unit: kg }
+        weight: { total: 5, unit: kg }
         sets: 3
-        reps: "15"
-        rest: "60s"
-        progression: "Light and strict. To 3×15 clean, then +1 kg."
-        notes: "Lie chest-down on a flat or low-incline bench, arms hanging, slight elbow bend, lift out to the sides, pause at the top. The bench holds you — no bent-over hinge to balance. If the pec deck has a rear-delt setting (sit facing the pad), use that instead."
-        media: { db: Lying_Rear_Delt_Raise }
+        reps: "12-15 / arm"
+        rest: "45s"
+        progression: "Light and strict. To 3×15/arm, then one pin. Both cable columns free? Do both arms at once, crossing the cables — that's what the demo shows."
+        notes: "One column, pulley at shoulder height, no handle — hold the cable ball. Stand side-on, hold the frame with the free hand, pull across and out to the side with a slight elbow bend, pause, return slowly. Torso stays still."
+        media: { db: Cable_Rear_Delt_Fly }
 
       - name: Face Pull
         equipment: cable
