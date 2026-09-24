@@ -2,3 +2,4 @@ node_modules/
 *.log
 workout-backup-*.json
 .DS_Store
+.claude/scheduled_tasks.lock
