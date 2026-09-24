@@ -1,7 +1,9 @@
 # ============================================================================
 #  3-DAY FULL-BODY HYPERTROPHY  —  COMMERCIAL GYM (barbell, bench + rack,
-#  cable station, lat pulldown, seated row, leg press, leg curl/extension,
-#  pec deck, calf machine). Nothing exotic — every piece is in almost any gym.
+#  cable station, lat pulldown, seated row, leg press, LYING leg curl, leg
+#  extension, pec deck, shoulder press machine, calf machine, pull-up bar).
+#  Nothing exotic — every piece is in almost any gym. Not assumed: a seated
+#  leg curl or an assisted pull-up machine (this gym has neither).
 #
 #  Sibling of data/workout.yml (the home/dumbbell plan). SAME split, SAME days,
 #  SAME rep ranges, so you can pick whichever plan matches where you are today
@@ -19,11 +21,14 @@
 #     is the most contested spot in any gym. Every cable move below uses a
 #     single column, so you can work around whoever is on the other side.
 #   • Nothing needs two benches, a bench plus a box, or a machine a mid-range
-#     gym might not own. Where a machine is common but not guaranteed (pec deck,
-#     shoulder press), the notes give the dumbbell fallback.
+#     gym might not own. Where a machine is common but not guaranteed (pec deck),
+#     the notes give the dumbbell fallback.
 #   • Every move is novice-doable on day one. Anything that needs a base first
 #     (hanging leg raises, parallel-bar dips) is written as a progression TARGET
-#     in the notes, not as the prescription.
+#     in the notes, not as the prescription. Pull-ups are the one exception:
+#     Friday opens with a staged progression that starts from a dead hang.
+#   • Rest 120 s+ on the big compounds — longer rest measurably helps growth
+#     there. Isolation work stays at 45-75 s.
 #
 #  STARTING LOADS are derived from the dumbbell plan's numbers using the usual
 #  conversions — barbell ≈ 1.2× the two-dumbbell total. Treat every number
@@ -52,7 +57,7 @@ week:
         weight: { total: 35, unit: kg }
         sets: 3
         reps: "8-12"
-        rest: "90s"
+        rest: "120s"
         tempo: "2-0-1"
         progression: "To 3×12, then +2.5 kg. Training alone? Use the safety pins, or swap in the chest press machine."
         notes: "Shoulder blades pinched, feet flat, bar to mid-chest, elbows ~45°."
@@ -64,8 +69,8 @@ week:
         weight: { total: 35, unit: kg }
         sets: 3
         reps: "10-12"
-        rest: "75s"
-        progression: "To 3×12, then one pin up. Once you pull your bodyweight for 10, move to real pull-ups."
+        rest: "120s"
+        progression: "To 3×12, then one pin up. Builds the pulling base for Friday's pull-up progression."
         notes: "Chest up, pull the bar to the collarbone, elbows down and back — don't lean way back."
         media: { db: Wide-Grip_Lat_Pulldown }
 
@@ -75,21 +80,21 @@ week:
         weight: { total: 60, unit: kg }
         sets: 3
         reps: "10-12"
-        rest: "90s"
+        rest: "120s"
         progression: "Legs climb fastest of anything — expect +5-10 kg most weeks early on."
         notes: "Feet shoulder-width mid-platform, knees track over toes, lower until hips start to tuck. Never lock the knees out hard."
         media: { db: Leg_Press }
 
-      - name: Seated Leg Curl
+      - name: Lying Leg Curl
         equipment: machine
         muscles: [hamstrings]
         weight: { total: 25, unit: kg }
         sets: 3
         reps: "10-12"
         rest: "75s"
-        progression: "To 3×12, then one pin. Seated beats lying for hamstring growth (longer muscle length)."
-        notes: "Pad just above the ankles, hips strapped down, squeeze at the bottom, 2 s back up."
-        media: { db: Seated_Leg_Curl }
+        progression: "To 3×12, then one pin. No seated curl in this gym — Wednesday's RDL covers the stretched position the seated version would add."
+        notes: "Hips pressed into the pad, no arching, 2-3 s lowering."
+        media: { db: Lying_Leg_Curls }
 
       - name: Machine Shoulder Press
         equipment: machine
@@ -98,8 +103,8 @@ week:
         sets: 3
         reps: "8-12"
         rest: "75s"
-        progression: "To 3×12, then one pin. Free-weight version comes back on Friday."
-        notes: "Seat height so the handles start at shoulder level, ribs down, no arching. No press machine? Seated DB shoulder press on an upright bench."
+        progression: "To 3×12, then one pin. Second weekly hit on Friday — same machine, beat today's reps."
+        notes: "Seat height so the handles start at shoulder level, ribs down, no arching."
         media: { db: Leverage_Shoulder_Press }
 
       - name: DB Lateral Raise
@@ -135,6 +140,18 @@ week:
         notes: "Elbows glued to your ribs, spread the rope apart at the bottom."
         media: { db: Triceps_Pushdown_-_Rope_Attachment }
 
+      - name: Calf Press on Leg Press
+        equipment: machine
+        muscles: [calves]
+        weight: { total: 60, unit: kg }
+        sets: 3
+        reps: "12-20"
+        rest: "45s"
+        tempo: "1-1-1"
+        progression: "To 3×20, then one pin. Second weekly calf hit — Wednesday's seated raise is the other."
+        notes: "Balls of the feet on the bottom edge of the platform, knees straight but not locked, safety stops ON. Full stretch at the bottom, pause 1 s at the top."
+        media: { db: Calf_Press_On_The_Leg_Press_Machine }
+
       - name: Plank
         equipment: bodyweight
         muscles: [abdominals, core]
@@ -157,7 +174,7 @@ week:
         weight: { total: 30, unit: kg }
         sets: 3
         reps: "8-12"
-        rest: "75s"
+        rest: "120s"
         tempo: "2-0-1"
         progression: "To 3×12, then +2.5 kg. Bench at 30° — steeper turns it into a shoulder press."
         notes: "Same cues as flat bench; bar touches just under the collarbone."
@@ -169,7 +186,7 @@ week:
         weight: { total: 35, unit: kg }
         sets: 3
         reps: "10-12"
-        rest: "75s"
+        rest: "120s"
         progression: "To 3×12, then one pin. Back tolerates a lot of volume — you'll climb fast here."
         notes: "Chest tall, pull to the navel, squeeze the shoulder blades, control the stretch forward. No rocking."
         media: { db: Seated_Cable_Rows }
@@ -180,7 +197,7 @@ week:
         weight: { total: 40, unit: kg }
         sets: 3
         reps: "10-12"
-        rest: "90s"
+        rest: "120s"
         tempo: "3-0-1"
         progression: "To 3×12, then +5 kg. The single best hamstring/glute builder in the gym."
         notes: "Soft knees, hinge the hips back, bar grazes the thighs, neutral spine. Stop when the hamstrings stop stretching — not when the back rounds."
@@ -209,7 +226,7 @@ week:
         notes: "Seat set so the handles are at chest height; open wide for the stretch, hug back together. No pec deck? DB flyes on a flat bench, same cues."
         media: { db: Butterfly }
 
-      - name: DB Reverse Flye
+      - name: Chest-Supported Reverse Flye
         equipment: dumbbell
         muscles: [rear delts, back]
         weight: { per_hand: 4, unit: kg }
@@ -217,8 +234,8 @@ week:
         reps: "15"
         rest: "60s"
         progression: "Light and strict. To 3×15 clean, then +1 kg."
-        notes: "Hinge forward, slight elbow bend, lift to the sides, pause at the top. Dumbbells rather than the reverse pec deck — plenty of gyms don't have one."
-        media: { db: Reverse_Flyes }
+        notes: "Lie chest-down on a flat or low-incline bench, arms hanging, slight elbow bend, lift out to the sides, pause at the top. The bench holds you — no bent-over hinge to balance. If the pec deck has a rear-delt setting (sit facing the pad), use that instead."
+        media: { db: Lying_Rear_Delt_Raise }
 
       - name: Face Pull
         equipment: cable
@@ -258,15 +275,26 @@ week:
 
   friday:
     name: Full Body C
-    focus: 5 min warm-up → lift. Machine chest, close-grip pulldown, barbell squat + single-leg.
+    focus: 5 min warm-up → pull-ups while fresh → lift. Machine chest, close-grip pulldown, barbell squat, machine shoulders.
     exercises:
+      - name: Pull-up Progression
+        equipment: bodyweight
+        muscles: [lats, back, biceps]
+        weight: { bodyweight: true }
+        sets: 3
+        reps: "3-8"
+        rest: "120s"
+        progression: "Move up a stage once every set hits the target. 0) Can't hang 30 s: dead hang 20-30 s + 8 scapular pulls per set. 1) Negatives: step up to chin-over-bar, lower in 3-5 s, 3-5 reps. 2) At 3×5 slow negatives: band-assisted pull-ups 6-10 reps if the gym has bands — otherwise start each set with 1-2 full reps, then finish with negatives. 3) Full pull-ups, build to 3×8, then add a 4th set or weight."
+        notes: "Stage 0: put the hang seconds in the reps box. Shoulder-width overhand grip, start each rep from a full hang with shoulders pulled down, chin over the bar, no kipping. Negatives make you very sore at first — start at the low end."
+        media: { db: Pullups }
+
       - name: Machine Chest Press
         equipment: machine
         muscles: [chest, triceps]
         weight: { total: 30, unit: kg }
         sets: 3
         reps: "10-12"
-        rest: "75s"
+        rest: "120s"
         progression: "Third weekly chest hit, no spotter needed — push this one close to failure."
         notes: "Handles at mid-chest height, full stretch back, don't lock out hard."
         media: { db: Machine_Bench_Press }
@@ -277,7 +305,7 @@ week:
         weight: { total: 35, unit: kg }
         sets: 3
         reps: "10-12"
-        rest: "75s"
+        rest: "120s"
         progression: "Neutral V-handle. Match or beat Monday's pulldown reps, then one pin."
         notes: "Pull the elbows down to the ribs, lean back only ~10°."
         media: { db: Close-Grip_Front_Lat_Pulldown }
@@ -288,7 +316,7 @@ week:
         weight: { total: 30, unit: kg }
         sets: 3
         reps: "8-10"
-        rest: "120s"
+        rest: "150s"
         progression: "Start with the EMPTY bar and own the technique — add 2.5-5 kg/week from there. Legs climb fast."
         notes: "SET THE SAFETY PINS just below your bottom position. Bar on the rear delts, brace, sit between the heels, knees out, chest up."
         media: { db: Barbell_Squat }
@@ -300,20 +328,20 @@ week:
         sets: 3
         reps: "10-12"
         rest: "75s"
-        progression: "Second weekly curl variation — beat Monday's reps, then one pin."
+        progression: "Second weekly curl — match or beat Monday's reps, then one pin."
         notes: "Hips pressed into the pad, no arching, 2-3 s lowering."
         media: { db: Lying_Leg_Curls }
 
-      - name: Barbell Shoulder Press
-        equipment: barbell
+      - name: Machine Shoulder Press
+        equipment: machine
         muscles: [shoulders, triceps]
         weight: { total: 20, unit: kg }
         sets: 3
         reps: "8-12"
         rest: "75s"
-        progression: "Empty bar is a real starting weight here. To 3×12, then +2.5 kg."
-        notes: "Standing or seated. Ribs down, squeeze the glutes, press the head 'through' at the top."
-        media: { db: Barbell_Shoulder_Press }
+        progression: "Match or beat Monday's reps, then one pin."
+        notes: "Seat height so the handles start at shoulder level, ribs down, no arching."
+        media: { db: Leverage_Shoulder_Press }
 
       - name: DB Lateral Raise
         equipment: dumbbell
