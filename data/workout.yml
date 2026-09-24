@@ -189,7 +189,7 @@ week:
         notes: "Same hinge; brace hard, control the stretch."
         media: { db: Stiff-Legged_Dumbbell_Deadlift }
 
-      - name: Seated Rear Delt Raise
+      - name: DB Reverse Flye
         equipment: dumbbell
         muscles: [rear delts, back]
         weight: { per_hand: 4, unit: kg }
@@ -197,8 +197,8 @@ week:
         reps: "15"
         rest: "60s"
         progression: "Light and strict. To 3×15 clean, then +1 kg."
-        notes: "Sit on the end of the bench, chest resting on your thighs, DBs behind the calves. Slight elbow bend, raise out to the sides, pause at the top. Your legs hold you — no balance needed."
-        media: { db: Seated_Bent-Over_Rear_Delt_Raise }
+        notes: "Hinge forward, slight elbow bend, lift to the sides, pause at the top."
+        media: { db: Reverse_Flyes }
 
       - name: DB Lateral Raise
         equipment: dumbbell
