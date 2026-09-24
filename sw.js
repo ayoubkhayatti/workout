@@ -1,10 +1,12 @@
 /* sw.js — offline support.
    App shell: stale-while-revalidate (offline, but self-updates on next load).
-   data/ (plans + their index): network-first (see edits fast).
-   Exercise images: stale-while-revalidate (offline after first view). */
-const VERSION = "v19";
+   data/ (plans + their index): network-first (see edits fast), precached on install.
+   Exercise images: stale-while-revalidate in a version-independent cache. */
+const VERSION = "v20";
 const SHELL = "shell-" + VERSION;
-const MEDIA = "media-" + VERSION;
+// Unversioned on purpose: images are immutable and cost megabytes to refetch, so a
+// release must not throw them away. Keep this name in step with MEDIA_CACHE in app.js.
+const MEDIA = "media";
 const SHELL_FILES = [
   "./",
   "index.html",
@@ -20,8 +22,26 @@ const SHELL_FILES = [
   "icons/icon-180.png",
 ];
 
+// data/plans.json is the plan index (see app.js). Precache every plan it lists so a
+// plan works offline before it has ever been opened. Best-effort: a plan that fails
+// to fetch must not fail the whole install.
+async function cachePlans(c) {
+  try {
+    const res = await c.match("data/plans.json");
+    if (!res) return;
+    const list = await res.json();
+    await Promise.all(
+      list.map((p) => (p && p.file ? c.add("data/" + p.file).catch(() => {}) : null))
+    );
+  } catch {}
+}
+
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(SHELL).then((c) => c.addAll(SHELL_FILES)).then(() => self.skipWaiting()));
+  e.waitUntil(
+    caches.open(SHELL)
+      .then(async (c) => { await c.addAll(SHELL_FILES); await cachePlans(c); })
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener("activate", (e) => {
@@ -47,9 +67,11 @@ self.addEventListener("fetch", (e) => {
     return;
   }
 
-  // Exercise images (external): stale-while-revalidate. Cache opaque responses too
-  // so no-cors images still work offline after first view.
-  if (/\.(jpg|jpeg|png|gif|webp)$/i.test(url.pathname) && url.origin !== self.location.origin) {
+  // Exercise images and gifs (external): stale-while-revalidate. Cache opaque
+  // responses too so no-cors images still work offline after first view. Matched by
+  // extension OR by destination, so an <img> on a URL without one still counts.
+  const isImage = /\.(jpg|jpeg|png|gif|webp|avif)$/i.test(url.pathname) || req.destination === "image";
+  if (isImage && url.origin !== self.location.origin) {
     e.respondWith(
       caches.open(MEDIA).then(async (c) => {
         const hit = await c.match(req);
@@ -65,11 +87,13 @@ self.addEventListener("fetch", (e) => {
 
   // App shell + same-origin: stale-while-revalidate — serve cache fast, refresh in
   // background so a pushed fix lands on the next load without bumping VERSION.
+  // A navigation that misses both falls back to the shell, so launching offline on
+  // any in-scope URL still opens the app.
   e.respondWith(
     caches.open(SHELL).then(async (c) => {
       const hit = await c.match(req);
       const net = fetch(req).then((res) => { if (res.ok) c.put(req, res.clone()); return res; }).catch(() => hit);
-      return hit || net;
+      return hit || (await net) || (req.mode === "navigate" ? c.match("index.html") : undefined);
     })
   );
 });

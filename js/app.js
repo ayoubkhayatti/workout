@@ -4,10 +4,12 @@
 
   // Bump on every release, together with VERSION in sw.js — Settings shows it so a
   // manual refresh is verifiable against the latest change.
-  const APP_VERSION = "v19 (2026-09-22) — multiple plans, pick one in the header";
+  const APP_VERSION = "v20 (2026-09-24) — full offline: plans + exercise images cached";
 
   const DAYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
   const FREE_DB = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
+  // The cache sw.js serves exercise images from — keep in step with MEDIA in sw.js.
+  const MEDIA_CACHE = "media";
 
   const DEFAULT_PLAN = "data/workout.yml";
 
@@ -83,6 +85,20 @@
     if (media.db) return [FREE_DB + media.db + "/0.jpg", FREE_DB + media.db + "/1.jpg"];
     return null;
   }
+  // Only FREE_DB is known to send CORS headers. Everything else must be requested
+  // without them (opaque) or the request fails outright — buildMedia and the offline
+  // prefetch have to agree on this, or the prefetch caches nothing usable.
+  const corsOk = (url) => String(url).startsWith(FREE_DB);
+
+  // Every URL of a media block that can be stored for offline use. `video:` is left
+  // out on purpose: a YouTube embed is an iframe, and a video file is streamed with
+  // Range requests, which the Cache API refuses to store.
+  function mediaUrls(media) {
+    if (!media) return [];
+    if (media.video) return [];
+    if (media.gif) return [media.gif];
+    return resolveFrames(media) || [];
+  }
   function buildMedia(media, timers = activeTimers) {
     const box = el("div", { className: "media" });
     if (media && media.video) {
@@ -92,17 +108,22 @@
         : el("video", { src: media.video, controls: true, playsInline: true, loop: true, muted: true }));
       return box;
     }
-    if (media && media.gif) { box.append(el("img", { src: media.gif, className: "on", loading: "lazy" })); return box; }
+    if (media && media.gif) {
+      const g = el("img", { src: media.gif, className: "on", loading: "lazy" });
+      if (corsOk(media.gif)) g.crossOrigin = "anonymous";
+      box.append(g);
+      return box;
+    }
 
     const frames = resolveFrames(media);
     if (!frames) { box.append(el("div", { className: "ph", textContent: "No demo — add media: in YAML" })); return box; }
 
-    // Only the FREE_DB host is known to send CORS headers — request it in CORS mode so
-    // sw.js sees real status (won't cache a 404 as a valid opaque image). Custom hosts
-    // stay no-cors so they still render; sw.js caches those opaque responses for offline.
+    // CORS mode for FREE_DB so sw.js sees real status (won't cache a 404 as a valid
+    // opaque image). Custom hosts stay no-cors so they still render; sw.js caches
+    // those opaque responses for offline.
     const imgs = frames.map((src, i) => {
       const img = el("img", { src, className: i === 0 ? "on" : "", loading: "lazy" });
-      if (src.startsWith(FREE_DB)) img.crossOrigin = "anonymous";
+      if (corsOk(src)) img.crossOrigin = "anonymous";
       return img;
     });
     box.append(...imgs);
@@ -121,6 +142,78 @@
   function ytEmbed(u) {
     const m = String(u).match(/(?:youtu\.be\/|v=)([\w-]{11})/);
     return m ? `https://www.youtube-nocookie.com/embed/${m[1]}` : null;
+  }
+
+  // ---------- offline media ----------
+  // The shell, the plans and your logs are already offline; the exercise images are
+  // the only thing left on the network. Fetch the missing ones into the same cache
+  // sw.js reads, so they are there before the exercise is ever scrolled to.
+  function planMedia(plan) {
+    const out = [];
+    for (const day of Object.values((plan && plan.week) || {}))
+      for (const ex of (day && day.exercises) || []) out.push(...mediaUrls(ex.media));
+    return out;
+  }
+
+  // Every image of every plan in the index, not only the plan on screen — switching
+  // plans at the gym must not need a connection.
+  async function allMedia() {
+    const urls = new Set();
+    for (const p of state.plans) {
+      try {
+        const res = await fetch(p.url);
+        if (res.ok) planMedia(jsyaml.load(await res.text())).forEach((u) => urls.add(u));
+      } catch {}
+    }
+    return [...urls];
+  }
+
+  async function missingMedia(cache) {
+    const urls = await allMedia();
+    const missing = [];
+    for (const u of urls) if (!(await cache.match(u))) missing.push(u);
+    return { urls, missing };
+  }
+
+  // Writes to the cache directly rather than leaning on the sw.js fetch handler: on a
+  // first visit the worker is not controlling the page yet and would cache nothing.
+  // A few at a time — 80+ parallel requests stall a phone on mobile data.
+  async function prefetchMedia(onProgress) {
+    if (!("caches" in window)) throw new Error("no Cache API");
+    const cache = await caches.open(MEDIA_CACHE);
+    const { missing } = await missingMedia(cache);
+    const total = missing.length;
+    let done = 0;
+    if (onProgress) onProgress(0, total);
+    await Promise.all(Array.from({ length: 4 }, async () => {
+      while (missing.length) {
+        const u = missing.pop();
+        try {
+          const res = await fetch(u, corsOk(u) ? { mode: "cors" } : { mode: "no-cors" });
+          if (res.ok || res.type === "opaque") await cache.put(u, res);
+        } catch {}
+        if (onProgress) onProgress(++done, total);
+      }
+    }));
+    return total;
+  }
+
+  async function mediaStatus() {
+    if (!("caches" in window)) return "This browser can't store images for offline use.";
+    const { urls, missing } = await missingMedia(await caches.open(MEDIA_CACHE));
+    if (!urls.length) return "No exercise images to download.";
+    return missing.length
+      ? `${urls.length - missing.length} of ${urls.length} exercise images saved.`
+      : `All ${urls.length} exercise images saved — the app works fully offline.`;
+  }
+
+  // Background warm-up on launch. Steady state costs nothing (everything is cached),
+  // so this only downloads after a new plan or a cleared cache. Data Saver opts out;
+  // Settings still has the manual button.
+  function warmMedia() {
+    const c = navigator.connection;
+    if (c && c.saveData) return;
+    setTimeout(() => prefetchMedia().catch(() => {}), 1500);
   }
 
   // ---------- exercise card ----------
@@ -447,8 +540,9 @@
       textContent: "Edit the .yml files in data/ (and list them in data/plans.json), push, then Reload." }));
     view.append(c);
 
-    // App update: wipe the shell/media caches and reload — everything refetches
-    // from the network. IndexedDB (logs, profile, weights) is untouched.
+    // App update: wipe the shell cache and reload — the code refetches from the
+    // network. IndexedDB (logs, profile, weights) and the downloaded exercise images
+    // are untouched, so a refresh never costs megabytes on mobile data.
     const up = el("div", { className: "card" });
     up.append(el("h3", { textContent: "App update" }));
     const force = el("button", { className: "btn ghost", textContent: "Force refresh app (keeps data)" });
@@ -457,7 +551,7 @@
       try {
         const reg = "serviceWorker" in navigator && await navigator.serviceWorker.getRegistration();
         if (reg) await reg.update();
-        if ("caches" in window) for (const k of await caches.keys()) await caches.delete(k);
+        if ("caches" in window) for (const k of await caches.keys()) if (k !== MEDIA_CACHE) await caches.delete(k);
       } catch {}
       location.reload();
     };
@@ -467,6 +561,24 @@
       .catch(() => {});
     up.append(force, vHint);
     view.append(up);
+
+    const off = el("div", { className: "card" });
+    off.append(el("h3", { textContent: "Offline" }));
+    const offStatus = el("div", { className: "hint", style: "margin-bottom:10px", textContent: "Checking…" });
+    const dl = el("button", { className: "btn ghost", textContent: "Download exercise images" });
+    dl.onclick = async () => {
+      dl.disabled = true;
+      try {
+        const n = await prefetchMedia((d, t) => { offStatus.textContent = t ? `Downloading ${d}/${t}…` : "Everything is already saved."; });
+        offStatus.textContent = await mediaStatus();
+        toast(n ? `Saved ${n} images` : "Already offline-ready");
+      } catch (e) { offStatus.textContent = "Download failed: " + e.message; }
+      dl.disabled = false;
+    };
+    off.append(offStatus, dl, el("div", { className: "hint",
+      textContent: "Your plans and logs already work with no connection. Images download once and survive app updates." }));
+    mediaStatus().then((t) => { offStatus.textContent = t; }, () => { offStatus.textContent = "Offline status unavailable."; });
+    view.append(off);
 
     const b = el("div", { className: "card" });
     b.append(el("h3", { textContent: "Backup (your data stays on this phone)" }));
@@ -529,6 +641,7 @@
       state.plans = await loadPlanList();
       renderPicker();
       await reloadPlan();
+      warmMedia();
     } catch (e) {
       $("#view").innerHTML = "";
       $("#view").append(el("div", { className: "card", textContent: "Could not load the plan — " + e.message }));

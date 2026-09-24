@@ -24,6 +24,21 @@ Your profile, weight log and workout logs live only in that browser
 (IndexedDB). Use **Settings → Export data** to back them up; **Import** to restore
 or move to a new phone.
 
+## Offline
+
+Everything works with no connection: the app itself, every plan listed in
+`data/plans.json`, the exercise demos, the guided session and all logging.
+
+On the first launch the app quietly downloads every exercise image of every
+plan (a few MB, once) so a demo is there before you ever scroll to it. Later
+launches fetch nothing — **Settings → Offline** shows how many are saved and
+re-downloads any that are missing. Images survive app updates, and Data Saver
+turns the automatic download off (the button still works).
+
+The one thing that needs a connection is an exercise using `media: { video: … }`
+— video is streamed, not cached. Use `db:`, `frames:` or `gif:` for anything you
+want available offline.
+
 ## Make it your own plan
 
 1. **Fork** this repo.
