@@ -31,7 +31,7 @@ Everything works with no connection: the app itself, every plan listed in
 and all logging.
 
 On the first launch the app quietly downloads every exercise image of every
-plan (a few MB, once) so a demo is there before you ever scroll to it. Later
+plan (86 images, ~5 MB, once) so a demo is there before you ever scroll to it. Later
 launches fetch nothing — **Settings → Offline** shows how many are saved and
 re-downloads any that are missing. Images survive app updates, and Data Saver
 turns the automatic download off (the button still works).
