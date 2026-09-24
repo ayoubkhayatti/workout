@@ -8,9 +8,8 @@
     profile: { keyPath: "id" },      // single record id:"me"
     bodyweight: { keyPath: "date" }, // date: "YYYY-MM-DD", kg: number
     logs: { keyPath: "key" },        // key: "YYYY-MM-DD|idx|Exercise", sets:[...]
-    // Plans imported on this device. They live here rather than in the repo so a
-    // plan tuned to one person's body and loads never has to be published to use
-    // the app. Included in export/import like everything else.
+    // Plans imported on this device, for people using a deployment they can't push
+    // to. Plans also ship in data/; this is the second source, not a replacement.
     plans: { keyPath: "id" },        // { id, name, yaml, updated }
   };
 

@@ -20,9 +20,10 @@ title in the header to switch; your logs are one continuous history either way.
 2. **iPhone:** Share → **Add to Home Screen**. **Android:** menu → **Install app**.
 3. Launch from the home-screen icon — it runs full-screen and works offline.
 
-Your profile, weight log, workout logs and any plan you imported live only in
-that browser (IndexedDB) — nothing is ever uploaded. Use **Settings → Export
-data** to back them up; **Import** to restore or move to a new phone.
+Your profile, weight log and workout logs live only in that browser (IndexedDB)
+and are never committed or uploaded — the repo holds the app and its plans, never
+what you lifted. Use **Settings → Export data** to back them up; **Import** to
+restore or move to a new phone.
 
 ## Offline
 
@@ -42,28 +43,23 @@ want available offline.
 
 ## Make it your own plan
 
-A plan is personal data: it carries your working loads, and often your body and
-level in its notes. So the app keeps your plan on your device rather than in the
-repo.
+1. **Fork** this repo.
+2. Edit **`data/workout.yml`** (or `data/gym.yml`) — a whole plan is one readable
+   file. The schema and every field are documented in comments at the top.
+3. Commit & push. In the app: **Settings → Reload plan**.
 
-1. Copy `data/workout.yml` (or `data/gym.yml`) and edit it — a whole plan is one
-   readable file, and the schema and every field are documented in comments at
-   the top.
-2. In the app: **Settings → My plans → Import plan (.yml)**.
+### Using someone else's deployment
 
-It is stored in IndexedDB, appears in the header picker under **My plans**, works
-offline like everything else, and is included in **Settings → Export data**. It is
-never uploaded anywhere. **Export** next to it writes the `.yml` back out;
-**delete** removes it from the device and leaves your logs alone.
+No fork, or just trying the app at someone else's URL? **Settings → My plans →
+Import plan (.yml)** loads a plan straight from your phone. It is stored in
+IndexedDB, appears in the header picker under **My plans**, works offline like
+everything else, and is included in **Settings → Export data**. **Export** next to
+it writes the `.yml` back out; **delete** removes it and leaves your logs alone.
 
-> The plans in `data/` are public samples. Don't put your own numbers in them and
-> push — that publishes them. Import instead.
+### Adding another plan to the repo
 
-### Adding another sample plan
-
-This is for the plans shipped *with* the app, not your own. Static hosting can't
-list a directory, so `data/plans.json` is the index the picker reads. Drop a new
-`.yml` in `data/` and add a line to it:
+Static hosting can't list a directory, so `data/plans.json` is the index the
+picker reads. Drop a new `.yml` in `data/` and add a line to it:
 
 ```json
 [

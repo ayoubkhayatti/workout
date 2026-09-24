@@ -4,7 +4,7 @@
 
   // Bump on every release, together with VERSION in sw.js — Settings shows it so a
   // manual refresh is verifiable against the latest change.
-  const APP_VERSION = "v21 (2026-09-24) — import your own plan; it stays on this device";
+  const APP_VERSION = "v21 (2026-09-24) — import a plan from your device";
 
   const DAYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
   const FREE_DB = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
@@ -12,9 +12,9 @@
   const MEDIA_CACHE = "media";
 
   const DEFAULT_PLAN = "data/workout.yml";
-  // A plan reference is either a URL (a sample shipped in data/) or "local:<id>",
-  // a plan imported on this device and kept in IndexedDB. Keeping the personal
-  // ones out of the repo is the whole point: a plan carries your working loads.
+  // A plan reference is either a URL (a plan shipped in data/) or "local:<id>", a
+  // plan imported on this device and kept in IndexedDB — the way to run your own
+  // plan against a deployment you can't push to.
   const LOCAL = "local:";
   const isLocal = (ref) => String(ref).startsWith(LOCAL);
 
@@ -589,8 +589,8 @@
     const c = el("div", { className: "card" });
     c.append(el("h3", { textContent: "My plans" }));
     c.append(el("div", { className: "hint", style: "margin-bottom:10px",
-      textContent: "A plan carries your working loads, so import yours here instead of "
-        + "publishing it. It stays on this device, shows in the picker at the top, and "
+      textContent: "Load a plan straight from this device — handy when you can't push to "
+        + "the site you're using. It shows in the picker at the top, works offline, and "
         + "rides along in Export data." }));
 
     const mine = state.plans.filter((p) => p.local);
