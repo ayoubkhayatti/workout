@@ -16,6 +16,8 @@
 #     lowering (3–4 s) or add pauses to keep overloading.
 #   • Recovery: rest day between sessions (Mon/Wed/Fri). Deload ~every 8 weeks
 #     (2/3 the sets, stop ~4 RIR). Sleep 7–9h.
+#   • Rest 120 s on the big compounds — longer rest measurably helps growth
+#     there. Isolation work stays at 45–75 s.
 #   • Muscle gain lever = food: ~150–165 g protein/day, slight calorie surplus
 #     (+250–400 kcal). The plan is only the stimulus.
 #
@@ -26,6 +28,7 @@
 #  The guided player interleaves them; "rest" on the first move is the short
 #  transition, "rest" on the second is the real between-round rest. Pairs are
 #  non-competing muscles, so no strength cost — just ~10 min less clock time.
+#  (Supported by the app, but no exercise below uses it right now.)
 # ============================================================================
 
 title: Full-Body 3×
@@ -41,7 +44,7 @@ week:
         weight: { per_hand: 14, unit: kg }
         sets: 3
         reps: "8-12"
-        rest: "90s"
+        rest: "120s"
         tempo: "2-0-1"
         progression: "Add reps to 3×12, then +2 kg/hand. Long-term goal: 3×10 @ 22–25 kg."
         notes: "Shoulder blades pinched, feet flat, lower to mid-chest, elbows ~45°."
@@ -53,7 +56,7 @@ week:
         weight: { per_hand: 14, unit: kg }
         sets: 3
         reps: "10-12 / arm"
-        rest: "75s"
+        rest: "120s"
         progression: "To 3×12/arm, then +2 kg. Back handles a lot — expect to climb fast here."
         notes: "Flat back, hand & knee on bench, drive elbow to hip, no torso twist."
         media: { db: One-Arm_Dumbbell_Row }
@@ -64,7 +67,7 @@ week:
         weight: { per_hand: 8, unit: kg }
         sets: 3
         reps: "8-10 / leg"
-        rest: "75s"
+        rest: "120s"
         progression: "Nail balance first, even bodyweight. To 3×10/leg, then +2 kg. Rear foot on floor (bench = harder later)."
         notes: "Torso tall, front knee over toes, weight through front heel."
         media: { db: Split_Squat_with_Dumbbells }
@@ -75,7 +78,7 @@ week:
         weight: { per_hand: 14, unit: kg }
         sets: 3
         reps: "10-12"
-        rest: "75s"
+        rest: "120s"
         tempo: "3-0-1"
         progression: "To 3×12, then +2 kg. Feel the hamstring stretch, not the lower back."
         notes: "Soft knees, hinge hips back, DBs graze thighs, neutral spine."
@@ -146,7 +149,7 @@ week:
         weight: { per_hand: 12, unit: kg }
         sets: 3
         reps: "8-12"
-        rest: "75s"
+        rest: "120s"
         tempo: "2-0-1"
         progression: "To 3×12, then +2 kg. Bench at 30°, not steeper (that becomes a shoulder press)."
         notes: "Same cues as flat bench; targets upper chest."
@@ -158,7 +161,7 @@ week:
         weight: { per_hand: 12, unit: kg }
         sets: 3
         reps: "10-12"
-        rest: "75s"
+        rest: "120s"
         progression: "To 3×12, then +2 kg. Chest on the incline bench kills momentum = cleaner back work."
         notes: "Face-down on 30° bench, row both DBs to hips, squeeze shoulder blades."
         media: { db: Dumbbell_Incline_Row }
@@ -169,7 +172,7 @@ week:
         weight: { total: 14, unit: kg }
         sets: 3
         reps: "10-12"
-        rest: "90s"
+        rest: "120s"
         progression: "One DB at chest. To 3×12, then +2 kg. Nearing 25 kg? Add a 3–4 s descent, then move to split squats."
         notes: "Sit down between the heels, torso upright, knees out."
         media: { db: Goblet_Squat }
@@ -180,13 +183,13 @@ week:
         weight: { per_hand: 16, unit: kg }
         sets: 3
         reps: "8-10"
-        rest: "75s"
+        rest: "120s"
         tempo: "3-0-1"
         progression: "A touch heavier / lower reps than Monday. To 3×10, then +2 kg (cap 25)."
         notes: "Same hinge; brace hard, control the stretch."
         media: { db: Stiff-Legged_Dumbbell_Deadlift }
 
-      - name: DB Reverse Flye
+      - name: Chest-Supported Reverse Flye
         equipment: dumbbell
         muscles: [rear delts, back]
         weight: { per_hand: 4, unit: kg }
@@ -194,8 +197,8 @@ week:
         reps: "15"
         rest: "60s"
         progression: "Light and strict. To 3×15 clean, then +1 kg."
-        notes: "Hinge forward, slight elbow bend, lift to the sides, pause at the top."
-        media: { db: Reverse_Flyes }
+        notes: "Lie chest-down on the bench (flat or low incline), arms hanging, slight elbow bend, lift out to the sides, pause at the top. The bench holds you — no bent-over hinge to balance. Same name as the gym plan — one continuous history."
+        media: { db: Lying_Rear_Delt_Raise }
 
       - name: DB Lateral Raise
         equipment: dumbbell
@@ -244,7 +247,7 @@ week:
 
   friday:
     name: Full Body C
-    focus: Row warm-up 5 min → lift. Chest volume + single-leg. Optional light row finisher after.
+    focus: Row warm-up 5 min → lift. Chest volume + single-leg + calves. Optional light row finisher after.
     exercises:
       - name: DB Flat Bench Press
         equipment: dumbbell
@@ -252,7 +255,7 @@ week:
         weight: { per_hand: 14, unit: kg }
         sets: 3
         reps: "8-12"
-        rest: "90s"
+        rest: "120s"
         progression: "Third weekly chest hit — beat one number vs Monday (a rep or the load)."
         media: { db: Dumbbell_Bench_Press }
 
@@ -274,7 +277,7 @@ week:
         weight: { per_hand: 14, unit: kg }
         sets: 3
         reps: "10-12 / arm"
-        rest: "75s"
+        rest: "120s"
         progression: "Match/beat Monday. Then +2 kg."
         media: { db: One-Arm_Dumbbell_Row }
 
@@ -284,7 +287,7 @@ week:
         weight: { per_hand: 8, unit: kg }
         sets: 3
         reps: "10 / leg"
-        rest: "75s"
+        rest: "120s"
         progression: "Step back (kinder on knees than forward). To 3×10/leg, then +2 kg."
         notes: "Long step, torso tall, push through the front heel to stand."
         media: { db: Dumbbell_Lunges }
@@ -319,6 +322,18 @@ week:
         rest: "60s"
         progression: "Neutral grip hits brachialis/forearm. To 3×12, then +2 kg."
         media: { db: Alternate_Hammer_Curl }
+
+      - name: Standing DB Calf Raise
+        equipment: dumbbell
+        muscles: [calves]
+        weight: { per_hand: 14, unit: kg }
+        sets: 3
+        reps: "12-20"
+        rest: "45s"
+        tempo: "1-1-1"
+        progression: "Second weekly calf hit — match or beat Wednesday's reps."
+        notes: "Full stretch at the bottom, pause 1 s at the top."
+        media: { db: Calf_Raise_On_A_Dumbbell }
 
       - name: Lying Leg Raise
         equipment: bodyweight
