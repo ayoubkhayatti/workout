@@ -1,7 +1,8 @@
 # ============================================================================
 #  3-DAY FULL-BODY HYPERTROPHY  —  COMMERCIAL GYM (barbell, bench + rack,
 #  cable station, lat pulldown, seated row, leg press, LYING leg curl, leg
-#  extension, pec deck, shoulder press machine, calf machine, pull-up bar).
+#  extension, ab crunch machine, shoulder press machine, calf machine,
+#  pull-up bar). No working pec deck.
 #  Nothing exotic — every piece is in almost any gym. Not assumed: a seated
 #  leg curl or an assisted pull-up machine (this gym has neither).
 #
@@ -14,15 +15,15 @@
 #   • Load ceiling is gone. Machines and barbells go far past 25 kg/hand, so
 #     the big movements (press, row, leg press, RDL) carry the growth here and
 #     you progress with weight, not only with reps.
-#   • Stability is free. Pulldown, seated row, leg press and pec deck let a
+#   • Stability is free. Pulldown, seated row, leg press and chest press let a
 #     novice push closer to failure safely without a spotter.
 #   • Pick machines over free weights when training alone and no one can spot.
 #   • NOTHING here needs both columns of the cable crossover at once — that rig
 #     is the most contested spot in any gym. Every cable move below uses a
 #     single column, so you can work around whoever is on the other side.
 #   • Nothing needs two benches, a bench plus a box, or a machine a mid-range
-#     gym might not own. Where a machine is common but not guaranteed (pec deck),
-#     the notes give the dumbbell fallback.
+#     gym might not own. Isolation work leans on dumbbells so it never waits
+#     for the busy cable station.
 #   • Every move is novice-doable on day one. Anything that needs a base first
 #     (hanging leg raises, parallel-bar dips) is written as a progression TARGET
 #     in the notes, not as the prescription. Pull-ups are the one exception:
@@ -214,28 +215,28 @@ week:
         notes: "Pause 1 s at the top, 2-3 s lowering. Knee pain = shorten the range, don't grind."
         media: { db: Leg_Extensions }
 
-      - name: Pec Deck
-        equipment: machine
+      - name: DB Flye
+        equipment: dumbbell
         muscles: [chest]
-        weight: { total: 25, unit: kg }
+        weight: { per_hand: 6, unit: kg }
         sets: 3
         reps: "12-15"
         rest: "60s"
         tempo: "3-0-1"
-        progression: "Stretch-focused, never heavy — protect the shoulders. To 3×15, then one pin."
-        notes: "Seat set so the handles are at chest height; open wide for the stretch, hug back together. No pec deck? DB flyes on a flat bench, same cues."
-        media: { db: Butterfly }
+        progression: "Stretch-focused, never heavy — protect the shoulders. To 3×15, then +1-2 kg."
+        notes: "Flat bench, soft elbows fixed, open wide for a big chest stretch, hug back up. Same name as the home plan — one continuous history."
+        media: { db: Dumbbell_Flyes }
 
-      - name: Single-Arm Cable Rear Delt Fly
-        equipment: cable
+      - name: DB Reverse Flye
+        equipment: dumbbell
         muscles: [rear delts, back]
-        weight: { total: 5, unit: kg }
+        weight: { per_hand: 4, unit: kg }
         sets: 3
-        reps: "12-15 / arm"
-        rest: "45s"
-        progression: "Light and strict. To 3×15/arm, then one pin. Both cable columns free? Do both arms at once, crossing the cables — that's what the demo shows."
-        notes: "One column, pulley at shoulder height, no handle — hold the cable ball. Stand side-on, hold the frame with the free hand, pull across and out to the side with a slight elbow bend, pause, return slowly. Torso stays still."
-        media: { db: Cable_Rear_Delt_Fly }
+        reps: "15"
+        rest: "60s"
+        progression: "Light and strict. To 3×15 clean, then +1 kg."
+        notes: "Hinge forward, slight elbow bend, lift to the sides, pause at the top. Same name as the home plan — one continuous history."
+        media: { db: Reverse_Flyes }
 
       - name: Face Pull
         equipment: cable
@@ -260,16 +261,16 @@ week:
         notes: "Full stretch at the bottom, pause 1 s at the top. No bouncing."
         media: { db: Seated_Calf_Raise }
 
-      - name: Cable Crunch
-        equipment: cable
+      - name: Ab Crunch Machine
+        equipment: machine
         muscles: [abdominals, core]
         weight: { total: 20, unit: kg }
         sets: 3
         reps: "12-15"
         rest: "45s"
         progression: "Abs are a muscle — load them. To 3×15, then one pin."
-        notes: "Kneel facing the stack, rope by your ears, curl the ribs to the hips. Hips stay still — this is not a hinge."
-        media: { db: Cable_Crunch }
+        notes: "Curl the ribs down toward the hips and pause 1 s; don't pull with the arms or hinge at the hips. Slow on the way back."
+        media: { db: Ab_Crunch_Machine }
 
   thursday: { rest: true, name: Rest, notes: "Full rest or easy 15-20 min cardio (zone 2)." }
 
