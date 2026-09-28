@@ -4,7 +4,7 @@
 
   // Bump on every release, together with VERSION in sw.js — Settings shows it so a
   // manual refresh is verifiable against the latest change.
-  const APP_VERSION = "v21 (2026-09-24) — import a plan from your device";
+  const APP_VERSION = "v23 (2026-09-28) — readable kg/reps fields on any phone";
 
   const DAYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
   const FREE_DB = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";

@@ -2,7 +2,7 @@
    App shell: stale-while-revalidate (offline, but self-updates on next load).
    data/ (plans + their index): network-first (see edits fast), precached on install.
    Exercise images: stale-while-revalidate in a version-independent cache. */
-const VERSION = "v22";
+const VERSION = "v23";
 const SHELL = "shell-" + VERSION;
 // Unversioned on purpose: images are immutable and cost megabytes to refetch, so a
 // release must not throw them away. Keep this name in step with MEDIA_CACHE in app.js.
@@ -39,7 +39,12 @@ async function cachePlans(c) {
 self.addEventListener("install", (e) => {
   e.waitUntil(
     caches.open(SHELL)
-      .then(async (c) => { await c.addAll(SHELL_FILES); await cachePlans(c); })
+      // cache: "reload" skips the HTTP cache — GitHub Pages sends max-age=600, so a
+      // plain addAll can precache the previous release's files under the new VERSION.
+      .then(async (c) => {
+        await c.addAll(SHELL_FILES.map((f) => new Request(f, { cache: "reload" })));
+        await cachePlans(c);
+      })
       .then(() => self.skipWaiting())
   );
 });

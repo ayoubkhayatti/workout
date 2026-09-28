@@ -228,7 +228,9 @@ button.btn + button.btn { margin-top: 10px; }
 .s-inputs { display: grid; gap: 8px; }
 .s-field { display: grid; grid-template-columns: 40px 1fr; align-items: center; }
 .s-field label { font-size: 14px; color: var(--muted); }
-.s-stepper { display: grid; grid-template-columns: 68px 1fr 68px; gap: 8px; }
+/* Buttons give way (down to a 44px touch target) before the number does —
+   Android font/display scaling can shrink the CSS width well below 360px. */
+.s-stepper { display: grid; grid-template-columns: minmax(44px, 68px) minmax(80px, 1fr) minmax(44px, 68px); gap: 8px; }
 .s-stepper input {
   background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
   border-radius: 12px; font-size: 26px; font-weight: 700; text-align: center; padding: 14px 4px; width: 100%;
